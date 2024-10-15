@@ -8,4 +8,9 @@ Edoardo Daniele Cannas - edoardodaniele.cannas@polimi.it
 JPEG_AI_PATH = '/nas/home/ecannas/third_party_code/jpeg-ai-reference-software'  # put here the path to the jpeg-ai-reference-software
 
 MODELS_LIST = {'Grag2021_progan': 'Grag2021_progan',
-               'Grag2021_biggan': 'Grag2021_biggan',}
+               'Grag2021_latent': 'Grag2021_latent',}
+
+TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco', 'lsun'],
+             'Grag2021_latent': ['imagenet', 'coco', 'lsun'],}
+
+DETECTORS = ['Grag2021_progan', 'Grag2021_latent']
