@@ -27,14 +27,14 @@ class Detector:
 
     def init_model(self):
         if self.detector == 'Grag2021_progan':
-            from third_party.DMImageDetection_test_code import get_method_here, def_model
+            from utils.third_party.DMImageDetection_test_code.get_method_here import get_method_here, def_model
             _, model_path, arch, norm_type, patch_size = get_method_here(self.detector,
                                                                          weights_path=self.weights_path)
             model = def_model(arch, model_path, localize=False)
             model = model.to(self.device).eval()
             return model
         elif self.detector == 'Grag2021_latent':
-            from third_party.DMImageDetection_test_code import get_method_here, def_model
+            from utils.third_party.DMImageDetection_test_code.get_method_here import get_method_here, def_model
             _, model_path, arch, norm_type, patch_size = get_method_here(self.detector,
                                                                          weights_path=self.weights_path)
             model = def_model(arch, model_path, localize=False)
