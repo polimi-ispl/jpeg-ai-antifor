@@ -8,19 +8,21 @@ Edoardo Daniele Cannas - edoardodaniele.cannas@polimi.it
 
 # --- Libraries --- #
 import os
-
 import torch
 import glob
 from PIL import Image
 import sys
+import argparse
+from tqdm import tqdm
+from multiprocessing import cpu_count
+# --- Setup the JPEG-AI software suite --- #
 sys.path.append('../')
+from utils.params import *
+sys.path.append(JPEG_AI_PATH)  # Add the jpeg-ai-reference-software to the path
 from src.codec import get_downloader
 from src.codec.common import Image
 from src.codec.coders import CodecEncoder
 from src.codec.coders import (def_encoder_base_parser, def_encoder_parser_decorator)
-import argparse
-from tqdm import tqdm
-from multiprocessing import cpu_count
 
 
 # --- Helpers functions and classes --- #
@@ -157,7 +159,9 @@ if __name__ == "__main__":
                                                                       '(multiplied by 100)')
     parser.add_argument('--models_dir_name', type=str, default='../models', help='Directory name for the models')
     parser.add_argument('--num_samples', type=int, default=None, help='Number of samples to process')
+    parser.add_argument('--jpeg_ai_path', type=str, default='/nas/home/ecannas/third_party_code/jpeg-ai-reference-software',)
     args = parser.parse_args()
+
 
     # --- Setup the device --- #
     if args.gpu is not None:

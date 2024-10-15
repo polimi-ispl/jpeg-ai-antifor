@@ -13,7 +13,10 @@ import torch
 import glob
 from PIL import Image
 import sys
+# --- Setup the JPEG-AI software suite --- #
 sys.path.append('../')
+from utils.params import *
+sys.path.append(JPEG_AI_PATH)  # Add the jpeg-ai-reference-software to the path
 from src.codec import get_downloader
 from src.codec.common import Image
 from src.codec.coders import CodecEncoder
@@ -100,6 +103,27 @@ def list_images(directory):
     return image_files
 
 
+def pick_N_per_category(image_files, input_dir, N):
+    category_dict = {}
+
+    for image_path in image_files:
+        # Get the category
+        relative_path = os.path.relpath(image_path, input_dir)
+        category = os.path.dirname(relative_path)
+
+        # If the category is not already in the dictionary, add it
+        if category not in category_dict:
+            category_dict[category] = []
+
+        # Add the image to the category list if it has less than N images
+        if len(category_dict[category]) < N:
+            category_dict[category].append(image_path)
+
+    # Extract the list of images per category
+    selected_images = [img for imgs in category_dict.values() for img in imgs]
+    return selected_images
+
+
 def process_dir_with_encoder(coder: RecoEncoder, input_dir: str, save_dir: str):
 
     # --- Setup the coding engine --- #
@@ -125,23 +149,8 @@ def process_dir_with_encoder(coder: RecoEncoder, input_dir: str, save_dir: str):
     image_files = list_images(input_dir)
 
     # --- FOR DEBUGGING PURPOSES ONLY --- #
-    # def pick_one_per_category(image_files, input_dir):
-    #     category_dict = {}
-    #
-    #     for image_path in image_files:
-    #         # Get the category
-    #         relative_path = os.path.relpath(image_path, input_dir)
-    #         category = os.path.dirname(relative_path)
-    #
-    #         # If the category is not already in the dictionary, add it
-    #         if category not in category_dict:
-    #             category_dict[category] = image_path
-    #
-    #     # Extract the list of one image per category
-    #     selected_images = list(category_dict.values())
-    #     return selected_images
-    #
-    # image_files = pick_one_per_category(list_images(input_dir), input_dir)
+    if kwargs['num_samples'] is not None:
+        image_files = pick_N_per_category(list_images(input_dir), input_dir, kwargs['num_samples'])
 
     for image_path in tqdm(image_files):
         # Get the category and filename
@@ -177,6 +186,7 @@ if __name__ == "__main__":
     parser.add_argument('--set_target_bpp', type=int, default=1, help='Set the target bpp '
                                                                       '(multiplied by 100)')
     parser.add_argument('--models_dir_name', type=str, default='../models', help='Directory name for the models')
+    parser.add_argument('--num_samples', type=int, default=None, help='Number of samples to process')
     args = parser.parse_args()
 
     # --- Setup the device --- #
