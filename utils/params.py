@@ -10,7 +10,7 @@ JPEG_AI_PATH = '/nas/home/ecannas/third_party_code/jpeg-ai-reference-software'  
 MODELS_LIST = {'Grag2021_progan': 'Grag2021_progan',
                'Grag2021_latent': 'Grag2021_latent',}
 
-TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco', 'lsun'],
-             'Grag2021_latent': ['imagenet', 'coco', 'lsun'],}
+TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco'],
+             'Grag2021_latent': ['imagenet', 'coco'],}
 
 DETECTORS = ['Grag2021_progan', 'Grag2021_latent']

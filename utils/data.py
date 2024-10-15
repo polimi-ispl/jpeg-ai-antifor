@@ -40,6 +40,22 @@ class JPEGAIDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         img_path, label = self.data_df.iloc[idx]['path'], self.data_df.iloc[idx]['compressed']
         image = Image.open(img_path)
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
         if self.transform:
             image = self.transform(image)
         return image, torch.Tensor([label])
+
+if __name__ == '__main__':
+    # --- Test the dataset --- #
+    import pandas as pd
+    from utils.params import TEST_DATA
+    from tqdm import tqdm
+    data_info = pd.read_csv('/nas/public/exchange/JPEG-AI/data/TEST/data_info.csv')
+    data_info = data_info.loc[data_info['dataset'].isin(TEST_DATA['Grag2021_progan'])]
+    transforms = get_transform_list('Grag2021_progan')
+    dataset = JPEGAIDataset(root_dir='/nas/public/exchange/JPEG-AI/data/TEST', data_df=data_info, transform=transforms)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=False, num_workers=1)
+    for image, label in tqdm(dataloader):
+        continue
+
