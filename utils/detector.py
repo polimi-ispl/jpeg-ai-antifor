@@ -51,6 +51,15 @@ class Detector:
             model.fc.load_state_dict(state_dict)
             model = model.to(self.device).eval()
             print("Model loaded!")
+        elif self.detector == 'Wang2023ResNet50':
+            from utils.third_party.UniversalFakeDetect_test_code.models import get_model
+            # Load the backbone model
+            model = get_model('CLIP:RN50')
+            # Load the last fully connected layer
+            state_dict = torch.load(os.path.join(self.weights_path, 'fc_weights.pth'), map_location='cpu')
+            model.fc.load_state_dict(state_dict)
+            model = model.to(self.device).eval()
+            print("Model loaded!")
             return model
 
 
