@@ -47,7 +47,7 @@ class Detector:
             # Load the backbone model
             model = get_model('CLIP:ViT-L/14')
             # Load the last fully connected layer
-            state_dict = torch.load(self.weights_path, map_location='cpu')
+            state_dict = torch.load(os.path.join(self.weights_path, 'fc_weights.pth'), map_location='cpu')
             model.fc.load_state_dict(state_dict)
             model = model.to(self.device).eval()
             print("Model loaded!")
@@ -83,5 +83,5 @@ class Detector:
                 else:
                     output = output
             elif self.detector == 'Wang2023':
-                output = output.sigmoid().flatten().cpu().numpy()
+                output = output.flatten().cpu().numpy()
             return output
