@@ -32,6 +32,7 @@ class Detector:
                                                                          weights_path=self.weights_path)
             model = def_model(arch, model_path, localize=False)
             model = model.to(self.device).eval()
+            print("Model loaded!")
             return model
         elif self.detector == 'Grag2021_latent':
             from utils.third_party.DMImageDetection_test_code.get_method_here import get_method_here, def_model
@@ -39,7 +40,19 @@ class Detector:
                                                                          weights_path=self.weights_path)
             model = def_model(arch, model_path, localize=False)
             model = model.to(self.device).eval()
+            print("Model loaded!")
             return model
+        elif self.detector == 'Wang2023':
+            from utils.third_party.UniversalFakeDetect_test_code.models import get_model
+            # Load the backbone model
+            model = get_model('CLIP:ViT-L/14')
+            # Load the last fully connected layer
+            state_dict = torch.load(self.weights_path, map_location='cpu')
+            model.fc.load_state_dict(state_dict)
+            model = model.to(self.device).eval()
+            print("Model loaded!")
+            return model
+
 
     def process_sample(self, sample: torch.Tensor):
         with torch.no_grad():
@@ -69,4 +82,6 @@ class Detector:
                     output = np.mean(output, (1, 2))
                 else:
                     output = output
+            elif self.detector == 'Wang2023':
+                output = output.sigmoid().flatten().cpu().numpy()
             return output
