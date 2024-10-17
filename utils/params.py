@@ -12,6 +12,7 @@ MODELS_LIST = {'Grag2021_progan': 'Grag2021_progan',
                'Wang2023': 'Wang2023'}
 
 TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco'],
-             'Grag2021_latent': ['imagenet', 'coco'],}
+             'Grag2021_latent': ['imagenet', 'coco'],
+             'Wang2023': ['imagenet', 'coco', 'lsun', 'laion', 'raise', 'celeba']}
 
 DETECTORS = ['Grag2021_progan', 'Grag2021_latent', 'Wang2023']
