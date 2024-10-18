@@ -21,7 +21,7 @@ TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco'],
              'Ohja2023ResNet50': ['imagenet', 'coco', 'lsun', 'laion', 'raise', 'celeba'],
              'CLIP2024': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise'],
              'CLIP2024Plus': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise'],
-             'Corvi2023': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise']}
+             'Corvi2023': ['imagenet', 'coco']}
 
 DETECTORS = ['Grag2021_progan', 'Grag2021_latent', 'Ohja2023', 'Ohja2023ResNet50',
              'CLIP2024', 'CLIP2024Plus', 'Corvi2023']

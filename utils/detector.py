@@ -15,7 +15,7 @@ import yaml
 from PIL import Image
 from tqdm import tqdm
 from multiprocessing import cpu_count
-from params import *
+from .params import *
 
 # --- Helpers functions and classes --- #
 class Detector:
@@ -68,8 +68,6 @@ class Detector:
                 data = yaml.load(fid, Loader=yaml.FullLoader)
             model_path = os.path.join(self.weights_path, MODELS_LIST[self.detector], data['weights_file'])
             arch = data['arch']
-            norm_type = data['norm_type']
-            patch_size = data['patch_size']
             # Load the model
             model = load_weights(create_architecture(arch), model_path)
             model = model.to(self.device).eval()
