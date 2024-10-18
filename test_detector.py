@@ -44,7 +44,7 @@ def main(args: argparse.Namespace):
         data_info = data_info.iloc[:10]
     transforms = get_transform_list(detector_name)
     dataset = JPEGAIDataset(root_dir=input_dir, data_df=data_info, transform=transforms)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=cpu_count())
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=cpu_count()//2)
 
     # --- Prepare the detector --- #
     detector = Detector(detector_name, weigths_paths, device=device)
