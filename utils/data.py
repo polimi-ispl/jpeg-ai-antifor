@@ -24,11 +24,11 @@ def get_transform_list(detector: str):
     elif detector == 'Grag2021_latent':
         return T.Compose([T.ToTensor(),T.Normalize(mean=[0.485, 0.456, 0.406],
                                                     std=[0.229, 0.224, 0.225])])
-    elif detector == 'Wang2023':
+    elif detector == 'Ohja2023':
         return T.Compose([T.CenterCrop(224), T.ToTensor(),
                           T.Normalize(mean=[0.48145466, 0.4578275, 0.40821073],
                                       std=[0.26862954, 0.26130258, 0.27577711])])
-    elif detector == 'Wang2023ResNet50':
+    elif detector == 'Ohja2023ResNet50':
         return T.Compose([T.CenterCrop(224), T.ToTensor(),
                           T.Normalize(mean=[0.48145466, 0.4578275, 0.40821073],
                                       std=[0.26862954, 0.26130258, 0.27577711])])

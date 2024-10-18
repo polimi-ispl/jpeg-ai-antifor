@@ -42,7 +42,7 @@ class Detector:
             model = model.to(self.device).eval()
             print("Model loaded!")
             return model
-        elif self.detector == 'Wang2023':
+        elif self.detector == 'Ohja2023':
             from utils.third_party.UniversalFakeDetect_test_code.models import get_model
             # Load the backbone model
             model = get_model('CLIP:ViT-L/14')
@@ -51,7 +51,7 @@ class Detector:
             model.fc.load_state_dict(state_dict)
             model = model.to(self.device).eval()
             print("Model loaded!")
-        elif self.detector == 'Wang2023ResNet50':
+        elif self.detector == 'Ohja2023ResNet50':
             from utils.third_party.UniversalFakeDetect_test_code.models import get_model
             # Load the backbone model
             model = get_model('CLIP:RN50')
@@ -91,6 +91,6 @@ class Detector:
                     output = np.mean(output, (1, 2))
                 else:
                     output = output
-            elif self.detector == 'Wang2023':
+            elif self.detector == 'Ohja2023':
                 output = output.flatten().cpu().numpy()
             return output
