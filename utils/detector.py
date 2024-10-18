@@ -72,6 +72,13 @@ class Detector:
             model = load_weights(create_architecture(arch), model_path)
             model = model.to(self.device).eval()
             return model
+        elif self.detector in ['Wang2020JPEG01', 'Wang2020JPEG05']:
+            from utils.third_party.Wang2020CNNDetection.networks.resnet import resnet50
+            model = resnet50(num_classes=1)
+            state_dict = torch.load(os.path.join(self.weights_path, MODELS_LIST[self.detector]), map_location='cpu')
+            model.load_state_dict(state_dict['model'])
+            model = model.to(self.device).eval()
+            return model
         else:
             raise NotImplementedError(f"Detector {self.detector} not implemented")
 
@@ -118,4 +125,6 @@ class Detector:
                     output = np.mean(output, (1, 2))
                 else:
                     output = output
+            elif self.detector in ['Wang2020JPEG01', 'Wang2020JPEG05']:
+                output = output.cpu().numpy()
             return output

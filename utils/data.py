@@ -39,6 +39,10 @@ def get_transform_list(detector: str):
     elif detector == 'Corvi2023':
         return T.Compose([T.ToTensor(), T.Normalize(mean=[0.485, 0.456, 0.406],
                                                     std=[0.229, 0.224, 0.225])])
+    elif detector in ['Wang2020JPEG01', 'Wang2020JPEG05']:
+        return T.Compose([T.CenterCrop(224), T.ToTensor(),
+                          T.Normalize(mean=[0.485, 0.456, 0.406],
+                                      std=[0.229, 0.224, 0.225])])
     else:
         return T.Compose([T.ToTensor()])
 
