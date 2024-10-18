@@ -10,11 +10,15 @@ JPEG_AI_PATH = '/nas/home/ecannas/third_party_code/jpeg-ai-reference-software'  
 MODELS_LIST = {'Grag2021_progan': 'Grag2021_progan',
                'Grag2021_latent': 'Grag2021_latent',
                'Ohja2023': 'Ohja2023',
-               'Ohja2023ResNet50': 'Ohja2023ResNet50'}
+               'Ohja2023ResNet50': 'Ohja2023ResNet50',
+               'CLIP2024': 'clipdet_latent10k',
+               'CLIP2024Plus': 'clipdet_latent10k_plus',
+               'Corvi2023': 'Corvi2023'}
 
 TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco'],
              'Grag2021_latent': ['imagenet', 'coco'],
              'Ohja2023': ['imagenet', 'coco', 'lsun', 'laion', 'raise', 'celeba'],
              'Ohja2023ResNet50': ['imagenet', 'coco', 'lsun', 'laion', 'raise', 'celeba']}
 
-DETECTORS = ['Grag2021_progan', 'Grag2021_latent', 'Ohja2023', 'Ohja2023ResNet50']
+DETECTORS = ['Grag2021_progan', 'Grag2021_latent', 'Ohja2023', 'Ohja2023ResNet50',
+             'CLIP2024', 'CLIP2024Plus', 'Corvi2023']

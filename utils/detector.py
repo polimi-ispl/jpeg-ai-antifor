@@ -11,8 +11,8 @@ import sys
 import argparse
 import numpy as np
 import torch
+import yaml
 from PIL import Image
-from torchvision import transforms
 from tqdm import tqdm
 from multiprocessing import cpu_count
 from params import *
@@ -61,6 +61,21 @@ class Detector:
             model = model.to(self.device).eval()
             print("Model loaded!")
             return model
+        elif self.detector in ['CLIP2024', 'CLIP2024Plus', 'Corvi2023']:
+            from utils.third_party.ClipBased_SyntheticImageDetection_main.networks import create_architecture, load_weights
+            # Load the config-file
+            with open(os.path.join(self.weights_path, MODELS_LIST[self.detector], 'config.yaml')) as fid:
+                data = yaml.load(fid, Loader=yaml.FullLoader)
+            model_path = os.path.join(self.weights_path, MODELS_LIST[self.detector], data['weights_file'])
+            arch = data['arch']
+            norm_type = data['norm_type']
+            patch_size = data['patch_size']
+            # Load the model
+            model = load_weights(create_architecture(arch), model_path)
+            model = model.to(self.device).eval()
+            return model
+        else:
+            raise NotImplementedError(f"Detector {self.detector} not implemented")
 
 
     def process_sample(self, sample: torch.Tensor):
@@ -93,4 +108,16 @@ class Detector:
                     output = output
             elif self.detector == 'Ohja2023':
                 output = output.flatten().cpu().numpy()
+            elif self.detector in ['Ohja2023ResNet50', 'CLIP2024', 'CLIP2024Plus', 'Corvi2023']:
+                output = output.cpu().numpy()
+                if output.shape[1] == 1:
+                    output = output[:, 0]
+                elif output.shape[1] == 2:
+                    output = output[:, 1] - output[:, 0]
+                else:
+                    assert False
+                if len(output.shape) > 1:
+                    output = np.mean(output, (1, 2))
+                else:
+                    output = output
             return output
