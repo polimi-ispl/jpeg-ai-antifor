@@ -90,9 +90,10 @@ def create_custom_parser(args: argparse.Namespace):
     return parser
 
 
-def load_csv_files(directory):
+def load_csv_files(directory, target_bpp=1):
     # Define the image formats to look for
-    file_tags = ['train_jpeg-ai_P-96.csv', 'val_jpeg-ai_P-96.csv']
+    file_tags = [f'train_jpeg-ai_P-96_t_bpp-{target_bpp}.csv',
+                 f'val_jpeg-ai_P-96_t_bpp-{target_bpp}.csv']
 
     # Load the pickle files
     train_df, val_df = pd.read_csv(os.path.join(directory, file_tags[0])), pd.read_csv(os.path.join(directory, file_tags[1]))
@@ -117,7 +118,7 @@ def process_dir_with_encoder(coder: RecoEncoder, input_dir: str, save_dir: str):
     # --- Load the data info --- #
 
     # Dataframes with the corresponding pickle files
-    train_df, val_df = load_csv_files(input_dir)
+    train_df, val_df = load_csv_files(input_dir, kwargs['set_target_bpp'])
     if kwargs['num_samples'] is not None:
         train_df, val_df = train_df.iloc[:kwargs['num_samples']], val_df.iloc[:kwargs['num_samples']]
     # (Debugging this particular sample that caused problems)
