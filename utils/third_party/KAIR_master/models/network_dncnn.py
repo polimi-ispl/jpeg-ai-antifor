@@ -1,6 +1,6 @@
 
 import torch.nn as nn
-import models.basicblock as B
+from .basicblock import conv, sequential
 
 
 """
@@ -60,11 +60,11 @@ class DnCNN(nn.Module):
         assert 'R' in act_mode or 'L' in act_mode, 'Examples of activation function: R, L, BR, BL, IR, IL'
         bias = True
 
-        m_head = B.conv(in_nc, nc, mode='C'+act_mode[-1], bias=bias)
-        m_body = [B.conv(nc, nc, mode='C'+act_mode, bias=bias) for _ in range(nb-2)]
-        m_tail = B.conv(nc, out_nc, mode='C', bias=bias)
+        m_head = conv(in_nc, nc, mode='C'+act_mode[-1], bias=bias)
+        m_body = [conv(nc, nc, mode='C'+act_mode, bias=bias) for _ in range(nb-2)]
+        m_tail = conv(nc, out_nc, mode='C', bias=bias)
 
-        self.model = B.sequential(m_head, *m_body, m_tail)
+        self.model = sequential(m_head, *m_body, m_tail)
 
     def forward(self, x):
         n = self.model(x)
@@ -109,7 +109,7 @@ class IRCNN(nn.Module):
         L.append(nn.Conv2d(in_channels=nc, out_channels=nc, kernel_size=3, stride=1, padding=2, dilation=2, bias=True))
         L.append(nn.ReLU(inplace=True))
         L.append(nn.Conv2d(in_channels=nc, out_channels=out_nc, kernel_size=3, stride=1, padding=1, dilation=1, bias=True))
-        self.model = B.sequential(*L)
+        self.model = sequential(*L)
 
     def forward(self, x):
         n = self.model(x)
@@ -138,11 +138,11 @@ class FDnCNN(nn.Module):
         assert 'R' in act_mode or 'L' in act_mode, 'Examples of activation function: R, L, BR, BL, IR, IL'
         bias = True
 
-        m_head = B.conv(in_nc, nc, mode='C'+act_mode[-1], bias=bias)
-        m_body = [B.conv(nc, nc, mode='C'+act_mode, bias=bias) for _ in range(nb-2)]
-        m_tail = B.conv(nc, out_nc, mode='C', bias=bias)
+        m_head = conv(in_nc, nc, mode='C'+act_mode[-1], bias=bias)
+        m_body = [conv(nc, nc, mode='C'+act_mode, bias=bias) for _ in range(nb-2)]
+        m_tail = conv(nc, out_nc, mode='C', bias=bias)
 
-        self.model = B.sequential(m_head, *m_body, m_tail)
+        self.model = sequential(m_head, *m_body, m_tail)
 
     def forward(self, x):
         x = self.model(x)
