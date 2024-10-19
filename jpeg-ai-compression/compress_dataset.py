@@ -131,8 +131,6 @@ def process_dir_with_encoder(coder: RecoEncoder, input_dir: str, save_dir: str):
     image_files = list_images(input_dir)
     if kwargs['num_samples'] is not None:
         image_files = image_files[:kwargs['num_samples']]
-    # (Debugging this particular sample that caused problems)
-    #image_files = ['/nas/home/ecannas/third_party_code/jpeg-ai-reference-software/data/test/00009_TE_1976x1312_8bit_sRGB.png']
     for image_path in tqdm(image_files):
         # Get the filename and the extension
         file = os.path.basename(image_path)
@@ -157,9 +155,10 @@ if __name__ == "__main__":
     parser.add_argument('bin_path', type=str, default='decoded_samples', help='Save directory')
     parser.add_argument('--set_target_bpp', type=int, default=1, help='Set the target bpp '
                                                                       '(multiplied by 100)')
-    parser.add_argument('--models_dir_name', type=str, default='../models', help='Directory name for the models')
+    parser.add_argument('--models_dir_name', type=str, default='../models', help='Directory name for the '
+                                                                                 'models used in the encoder-decoder'
+                                                                                 'pipeline')
     parser.add_argument('--num_samples', type=int, default=None, help='Number of samples to process')
-    parser.add_argument('--jpeg_ai_path', type=str, default='/nas/home/ecannas/third_party_code/jpeg-ai-reference-software',)
     args = parser.parse_args()
 
 
