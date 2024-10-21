@@ -92,8 +92,8 @@ def create_custom_parser(args: argparse.Namespace):
 
 def load_csv_files(directory, target_bpp=1):
     # Define the image formats to look for
-    file_tags = [f'train_jpeg-ai_P-96_t_bpp-{target_bpp}.csv',
-                 f'val_jpeg-ai_P-96_t_bpp-{target_bpp}.csv']
+    file_tags = [f'encode_info/train_jpeg-ai_P-96_t_bpp-{target_bpp}.csv',
+                 f'encode_info/val_jpeg-ai_P-96_t_bpp-{target_bpp}.csv']
 
     # Load the pickle files
     train_df, val_df = pd.read_csv(os.path.join(directory, file_tags[0])), pd.read_csv(os.path.join(directory, file_tags[1]))
@@ -145,7 +145,6 @@ def process_dir_with_encoder(coder: RecoEncoder, input_dir: str, save_dir: str):
         # Process the image
         if os.path.exists(dec_path):
             print('Skipping (already decoded)', dec_path)
-            continue
         else:
             coder.encode_and_decode(r['image'], bin_path, dec_path)
         # coder.set_model_loaded(True)
@@ -178,7 +177,6 @@ def process_dir_with_encoder(coder: RecoEncoder, input_dir: str, save_dir: str):
         # Process the image
         if os.path.exists(dec_path):
             print('Skipping (already decoded)', dec_path)
-            continue
         else:
             coder.encode_and_decode(r['image'], bin_path, dec_path)
         # coder.set_model_loaded(True)
