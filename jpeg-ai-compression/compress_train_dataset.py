@@ -155,7 +155,7 @@ def process_dir_with_encoder(coder: RecoEncoder, input_dir: str, save_dir: str):
         compressed_train_df.loc[i, 'image'] = dec_path
 
     # Save the results
-    compressed_train_df.to_pickle(os.path.join(train_save_dir, 'compressed_train_P-96.pkl'))
+    compressed_train_df.to_csv(os.path.join(train_save_dir, 'compressed_train_P-96.csv'))
 
     # --- Process the val split --- #
 
@@ -188,7 +188,7 @@ def process_dir_with_encoder(coder: RecoEncoder, input_dir: str, save_dir: str):
         compressed_val_df.loc[i, 'image'] = dec_path
 
     # Save the results
-    compressed_val_df.to_pickle(os.path.join(val_save_dir, 'compressed_val_P-96.pkl'))
+    compressed_val_df.to_csv(os.path.join(val_save_dir, 'compressed_val_P-96.csv'))
 
 # --- Main --- #
 if __name__ == "__main__":
