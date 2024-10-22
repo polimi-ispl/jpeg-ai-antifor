@@ -16,13 +16,13 @@ input_path="/nas/public/exchange/JPEG-AI/data/TEST/raise/original"
 bin_path="/nas/public/exchange/JPEG-AI/data/TEST/raise/compressed"
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression RAISE started..."
+python ../utils/slack.py -u edo.cannas -m "Compression RAISE started..."
 
 # Loop through each bpp value and run the Python script
 for bpp in "${bpp_values[@]}"; do
-    echo "Running compress_dataset.py for the Wang2020 ImageNet test set, --set_target_bpp=${bpp}"
+    echo "Running compress_dataset.py for the Synthbuster RAISE test set, --set_target_bpp=${bpp}"
     python compress_dataset.py ${input_path} ${bin_path} --gpu ${gpu} --set_target_bpp=${bpp} --models_dir_name ${models_dir}
 done
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression RAISE finished!"
+python ../utils/slack.py -u edo.cannas -m "Compression RAISE finished!"

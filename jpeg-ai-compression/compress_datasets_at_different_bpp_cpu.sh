@@ -13,7 +13,7 @@ input_path="/nas/public/exchange/JPEG-AI/data/TEST/imagenet/original"
 bin_path="/nas/public/exchange/JPEG-AI/data/TEST/imagenet/compressed"
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression Imagenet started..."
+python ../utils/slack.py -u edo.cannas -m "Compression Imagenet started..."
 
 # Loop through each bpp value and run the Python script
 for bpp in "${bpp_values[@]}"; do
@@ -22,7 +22,7 @@ for bpp in "${bpp_values[@]}"; do
 done
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression Imagenet finished!"
+python ../utils/slack.py -u edo.cannas -m "Compression Imagenet finished!"
 
 # --- Compress the CelebA testset at various bpp values --- #
 
@@ -31,7 +31,7 @@ input_path="/nas/public/exchange/JPEG-AI/data/TEST/celeba/original"
 bin_path="/nas/public/exchange/JPEG-AI/data/TEST/celeba/compressed"
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression CelebA started..."
+python ../utils/slack.py -u edo.cannas -m "Compression CelebA started..."
 
 # Loop through each bpp value and run the Python script
 for bpp in "${bpp_values[@]}"; do
@@ -40,7 +40,7 @@ for bpp in "${bpp_values[@]}"; do
 done
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression CelebA finished!"
+python ../utils/slack.py -u edo.cannas -m "Compression CelebA finished!"
 
 # --- Compress the COCO testset at various bpp values --- #
 
@@ -49,7 +49,7 @@ input_path="/nas/public/exchange/JPEG-AI/data/TEST/coco/original"
 bin_path="/nas/public/exchange/JPEG-AI/data/TEST/coco/compressed"
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression COCO started..."
+python ../utils/slack.py -u edo.cannas -m "Compression COCO started..."
 
 # Loop through each bpp value and run the Python script
 for bpp in "${bpp_values[@]}"; do
@@ -58,7 +58,7 @@ for bpp in "${bpp_values[@]}"; do
 done
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression COCO finished!"
+python ../utils/slack.py -u edo.cannas -m "Compression COCO finished!"
 
 # --- Compress the raw_camera testset at various bpp values --- #
 
@@ -67,7 +67,7 @@ input_path="/nas/public/exchange/JPEG-AI/data/TEST/raw_camera/original"
 bin_path="/nas/public/exchange/JPEG-AI/data/TEST/raw_camera/compressed"
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression raw_camera started..."
+python ../utils/slack.py -u edo.cannas -m "Compression raw_camera started..."
 
 # Loop through each bpp value and run the Python script
 for bpp in "${bpp_values[@]}"; do
@@ -76,7 +76,7 @@ for bpp in "${bpp_values[@]}"; do
 done
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression raw_camera finished!"
+python ../utils/slack.py -u edo.cannas -m "Compression raw_camera finished!"
 
 # --- Compress the LAION testset at various bpp values --- #
 
@@ -85,7 +85,7 @@ input_path="/nas/public/exchange/JPEG-AI/data/TEST/laion/original"
 bin_path="/nas/public/exchange/JPEG-AI/data/TEST/laion/compressed"
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression LAION started..."
+python ../utils/slack.py -u edo.cannas -m "Compression LAION started..."
 
 # Loop through each bpp value and run the Python script
 for bpp in "${bpp_values[@]}"; do
@@ -94,7 +94,7 @@ for bpp in "${bpp_values[@]}"; do
 done
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression LAION finished!"
+python ../utils/slack.py -u edo.cannas -m "Compression LAION finished!"
 
 # --- Compress the FFHQ testset at various bpp values --- #
 
@@ -103,7 +103,7 @@ input_path="/nas/public/exchange/JPEG-AI/data/TEST/ffhq/original"
 bin_path="/nas/public/exchange/JPEG-AI/data/TEST/ffhq/compressed"
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression FFHQ started..."
+python ../utils/slack.py -u edo.cannas -m "Compression FFHQ started..."
 
 # Loop through each bpp value and run the Python script
 for bpp in "${bpp_values[@]}"; do
@@ -112,7 +112,7 @@ for bpp in "${bpp_values[@]}"; do
 done
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression FFHQ finished!"
+python ../utils/slack.py -u edo.cannas -m "Compression FFHQ finished!"
 
 # --- Compress the Synthbuster RAISE testset at various bpp values --- #
 
@@ -121,7 +121,7 @@ input_path="/nas/public/exchange/JPEG-AI/data/TEST/raise/original"
 bin_path="/nas/public/exchange/JPEG-AI/data/TEST/raise/compressed"
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression RAISE started..."
+python ../utils/slack.py -u edo.cannas -m "Compression RAISE started..."
 
 # Loop through each bpp value and run the Python script
 for bpp in "${bpp_values[@]}"; do
@@ -130,4 +130,4 @@ for bpp in "${bpp_values[@]}"; do
 done
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression RAISE finished!"
+python ../utils/../utils/slack.py -u edo.cannas -m "Compression RAISE finished!"

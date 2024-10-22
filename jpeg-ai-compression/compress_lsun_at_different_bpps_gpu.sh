@@ -13,7 +13,7 @@ bin_path="/nas/public/exchange/JPEG-AI/data/TEST/lsun/compressed"
 gpu=4
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression LSUN started..."
+python ../utils/slack.py -u edo.cannas -m "Compression LSUN started..."
 
 # Loop through each bpp value and run the Python script
 for bpp in "${bpp_values[@]}"; do
@@ -22,4 +22,4 @@ for bpp in "${bpp_values[@]}"; do
 done
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression LSUN finished!"
+python ../utils/slack.py -u edo.cannas -m "Compression LSUN finished!"
