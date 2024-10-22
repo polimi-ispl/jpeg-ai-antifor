@@ -3,21 +3,26 @@
 # Define the set_target_bpp values
 bpp_values=(12 25 75 100 200)
 
-# Define the input and output directories
-input_path="/nas/home/ecannas/third_party_code/jpeg-ai-reference-software/data/test"
-bin_path="/nas/home/ecannas/third_party_code/jpeg-ai-reference-software/data/test_compressed"
-
 # Define the GPU to be used
-gpu=3
+gpu=4
+
+# Define the model directory
+models_dir="/nas/home/ecannas/third_party_code/jpeg-ai-reference-software/models"
+
+# --- Compress the Synthbuster RAISE testset at various bpp values --- #
+
+# Define the input and output directories
+input_path="/nas/public/exchange/JPEG-AI/data/TEST/raise/original"
+bin_path="/nas/public/exchange/JPEG-AI/data/TEST/raise/compressed"
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression tasks started..."
+python slack.py -u edo.cannas -m "Compression RAISE started..."
 
 # Loop through each bpp value and run the Python script
 for bpp in "${bpp_values[@]}"; do
-    echo "Running compress_dataset.py with --set_target_bpp=${bpp}"
-    python compress_dataset.py ${input_path} ${bin_path} --gpu ${gpu} --set_target_bpp=${bpp} --models_dir_name ../models
+    echo "Running compress_dataset.py for the Wang2020 ImageNet test set, --set_target_bpp=${bpp}"
+    python compress_dataset.py ${input_path} ${bin_path} --gpu ${gpu} --set_target_bpp=${bpp} --models_dir_name ${models_dir}
 done
 
 # Send a message to the personal Slack channel
-python slack.py -u edo.cannas -m "Compression tasks finished!"
+python slack.py -u edo.cannas -m "Compression RAISE finished!"
