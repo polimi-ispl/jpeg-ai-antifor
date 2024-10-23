@@ -38,7 +38,7 @@ def main(args: argparse.Namespace):
     # --- Prepare the dataset --- #
     data_info = pd.read_csv(os.path.join(input_dir, 'data_info.csv'))
     if not test_all:
-        data_info = data_info.loc[data_info['dataset'].isin(TEST_DATA[detector_name])]
+        data_info = data_info.loc[data_info['dataset'].isin(COMPRESSED_TEST_DATA[detector_name])]
     if debug:
         data_info = data_info.loc[data_info['dataset']=='imagenet']
         data_info = data_info.iloc[:10]
@@ -69,7 +69,7 @@ def main(args: argparse.Namespace):
     # --- Save the results --- #
     output_dir = os.path.join(output_dir, detector_name)
     os.makedirs(output_dir, exist_ok=True)
-    save_path = os.path.join(output_dir, 'results')
+    save_path = os.path.join(output_dir, 'results_jpeg-ai_vs_real')
     if debug:
         results.to_csv(save_path + '_debug.csv')
     elif test_all:
