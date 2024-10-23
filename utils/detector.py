@@ -51,6 +51,7 @@ class Detector:
             model.fc.load_state_dict(state_dict)
             model = model.to(self.device).eval()
             print("Model loaded!")
+            return model
         elif self.detector == 'Ohja2023ResNet50':
             from utils.third_party.UniversalFakeDetect_test_code.models import get_model
             # Load the backbone model
