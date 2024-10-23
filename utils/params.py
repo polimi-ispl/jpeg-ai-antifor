@@ -17,15 +17,35 @@ MODELS_LIST = {'Grag2021_progan': 'Grag2021_progan',
                'Wang2020JPEG01': 'blur_jpg_prob0.1.pth',
                'Wang2020JPEG05': 'blur_jpg_prob0.5.pth'}
 
-TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco'],
+COMPRESSED_TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco'],
              'Grag2021_latent': ['imagenet', 'coco'],
-             'Ohja2023': ['imagenet', 'coco', 'lsun', 'laion', 'raise', 'celeba'],
-             'Ohja2023ResNet50': ['imagenet', 'coco', 'lsun', 'laion', 'raise', 'celeba'],
+             'Ohja2023': ['imagenet', 'coco', 'lsun', 'laion', 'raw_camera', 'celeba'],
+             'Ohja2023ResNet50': ['imagenet', 'coco', 'lsun', 'laion', 'raw_camera', 'celeba'],
              'CLIP2024': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise'],
              'CLIP2024Plus': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise'],
              'Corvi2023': ['imagenet', 'coco'],
-             'Wang2020JPEG01': ['lsun', 'imagenet', 'coco', 'celeba', 'raise'],
-             'Wang2020JPEG05': ['lsun', 'imagenet', 'coco', 'celeba', 'raise']}
+             'Wang2020JPEG01': ['lsun', 'imagenet', 'coco', 'celeba', 'raw_camera'],
+             'Wang2020JPEG05': ['lsun', 'imagenet', 'coco', 'celeba', 'raw_camera']}
+
+SYN_TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco'],
+             'Grag2021_latent': ['imagenet', 'coco'],
+             'Ohja2023': ['imagenet', 'coco', 'lsun', 'laion', 'raw_camera', 'celeba'],
+             'Ohja2023ResNet50': ['imagenet', 'coco', 'lsun', 'laion', 'raw_camera', 'celeba'],
+             'CLIP2024': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise'],
+             'CLIP2024Plus': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise'],
+             'Corvi2023': ['imagenet', 'coco'],
+             'Wang2020JPEG01': ['lsun', 'imagenet', 'coco', 'celeba', 'raw_camera'],
+             'Wang2020JPEG05': ['lsun', 'imagenet', 'coco', 'celeba', 'raw_camera']}
+
+SYN_DETECTOR_MAPPING = {'Grag2021_progan': 'Corvi2023',
+             'Grag2021_latent': 'Corvi2023',
+             'Ohja2023': 'Ohja2023',
+             'Ohja2023ResNet50': 'Ohja2023',
+             'CLIP2024': 'CLIP2024',
+             'CLIP2024Plus': 'CLIP2024',
+             'Corvi2023': 'Corvi2023',
+             'Wang2020JPEG01': 'Wang2020JPEG01',
+             'Wang2020JPEG05': 'Wang2020JPEG01'}
 
 DETECTORS = ['Grag2021_progan', 'Grag2021_latent', 'Ohja2023', 'Ohja2023ResNet50',
              'CLIP2024', 'CLIP2024Plus', 'Corvi2023', 'Wang2020JPEG01', 'Wang2020JPEG05']
