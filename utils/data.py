@@ -19,7 +19,8 @@ from typing import List
 
 def get_transform_list(detector: str):
     if detector == 'Grag2021_progan':
-        return T.Compose([T.ToTensor(),T.Normalize(mean=[0.485, 0.456, 0.406],
+        return T.Compose([T.CenterCrop(256),
+                          T.ToTensor(), T.Normalize(mean=[0.485, 0.456, 0.406],
                                                     std=[0.229, 0.224, 0.225])])
     elif detector == 'Grag2021_latent':
         return T.Compose([T.ToTensor(),T.Normalize(mean=[0.485, 0.456, 0.406],
@@ -58,7 +59,7 @@ class JPEGAIDataset(torch.utils.data.Dataset):
         return len(self.data_df)
 
     def __getitem__(self, idx):
-        img_path, label = self.data_df.iloc[idx]['path'], self.data_df.iloc[idx]['compressed']
+        img_path, label = self.data_df.iloc[idx]['path'], self.data_df.iloc[idx]['jpeg-ai_compressed']
         image = Image.open(img_path)
         if image.mode != 'RGB':
             image = image.convert('RGB')

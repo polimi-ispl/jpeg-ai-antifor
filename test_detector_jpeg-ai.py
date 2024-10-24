@@ -36,7 +36,14 @@ def main(args: argparse.Namespace):
     device = torch.device(f'cuda:{gpu}') if torch.cuda.is_available() else torch.device('cpu')
 
     # --- Prepare the dataset --- #
-    data_info = pd.read_csv(os.path.join(input_dir, 'data_info.csv'))
+    all_data_info = pd.read_csv(os.path.join(input_dir, 'data_info.csv'))
+    # The dataframe has two columns, 'jpeg-ai_compressed' == True if the image is compressed with JPEG-AI
+    # and 'jpeg_compressed' == True if the image is compressed with JPEG
+    # We need to select the rows where 'jpeg-ai_compressed' == True and ('jpeg-ai_compressed'==False and 'jpeg_compressed'==False)
+    # for selecting the uncompressed samples
+    jpeg_ai_info = all_data_info.loc[all_data_info['jpeg-ai_compressed']]
+    uncompressed_info = all_data_info.loc[(~all_data_info['jpeg-ai_compressed']) & (~all_data_info['jpeg_compressed'])]
+    data_info = pd.concat([jpeg_ai_info, uncompressed_info])
     if not test_all:
         data_info = data_info.loc[data_info['dataset'].isin(COMPRESSED_TEST_DATA[detector_name])]
     if debug:
