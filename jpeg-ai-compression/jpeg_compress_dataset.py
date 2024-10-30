@@ -11,7 +11,7 @@ from multiprocessing import cpu_count
 
 def list_images(directory):
     # Define the image formats to look for
-    image_formats = ["*.png", "*.PNG", "*.jpeg", "*.JPEG", "*.tiff", "*.TIFF", "*.jpg", "*.JPG"]
+    image_formats = ["*.png", "*.PNG", "*.tiff", "*.TIFF", "*.tif", "*.TIF"]
 
     # List to store the image paths
     image_files = []
