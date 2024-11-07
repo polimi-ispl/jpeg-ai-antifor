@@ -97,21 +97,24 @@ def main(args: argparse.Namespace):
                 comp_samples = compr_df.loc[(compr_df['filename'] == filename.replace('png', 'jpg')) \
                                             & (compr_df['dataset'] == dataset) \
                                             & (compr_df['content'] == content)]
-                # Cycle over the various BPPs values
-                bpps_dict = []
-                for ii, rr in comp_samples.iterrows():
-                    # Load the compressed samples
-                    comp_sample, _ = DataClass().load_image(rr['path'], color_conv='709', device=device)
-                    # Compute the metrics
-                    metrics_vals = metrics.process_images(orig_sample, comp_sample)
-                    # Save them
-                    bpps_dict.append(
-                        pd.DataFrame.from_dict({rr['qf']: {metric: metrics_vals[idx] for idx, metric in
-                                                                   enumerate(metrics.metrics_output)}},
-                                               orient='index'))
+                if len(comp_samples) == 0:
+                    continue
+                else:
+                    # Cycle over the various BPPs values
+                    bpps_dict = []
+                    for ii, rr in comp_samples.iterrows():
+                        # Load the compressed samples
+                        comp_sample, _ = DataClass().load_image(rr['path'], color_conv='709', device=device)
+                        # Compute the metrics
+                        metrics_vals = metrics.process_images(orig_sample, comp_sample)
+                        # Save them
+                        bpps_dict.append(
+                            pd.DataFrame.from_dict({rr['qf']: {metric: metrics_vals[idx] for idx, metric in
+                                                                       enumerate(metrics.metrics_output)}},
+                                                   orient='index'))
 
-                # Append the image path to the Dataframe and save it
-                images_list.append(pd.concat({r['path']: pd.concat(bpps_dict)}, names=['path', 'qf']))
+                    # Append the image path to the Dataframe and save it
+                    images_list.append(pd.concat({r['path']: pd.concat(bpps_dict)}, names=['path', 'qf']))
 
         # Append the images dictionary
         dataset_list.append(pd.concat({dataset: pd.concat(images_list)}, names=['dataset', 'path', 'bpp' if test_jpegai else 'qf']))
