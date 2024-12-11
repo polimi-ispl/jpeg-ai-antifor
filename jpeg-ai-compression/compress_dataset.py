@@ -126,24 +126,25 @@ def process_dir_with_encoder(coder: RecoEncoder, input_dir: str, save_dir: str):
 
     # Process all the files in the input directory
     # and save the decoded images in the save directory
-
-    # List of images in the input directory with various formats (e.g., PNG, JPEG, TIFF, etc.)
-    image_files = list_images(input_dir)
-    if kwargs['num_samples'] is not None:
-        image_files = image_files[:kwargs['num_samples']]
-    for image_path in tqdm(image_files):
-        # Get the filename and the extension
-        file = os.path.basename(image_path)
-        extension = file.split(".")[-1]
-        bin_path = os.path.join(save_dir, file.replace(f'.{extension}', ""))
-        dec_path = os.path.join(save_dir, file.replace(f'.{extension}', ".png"))
-        if os.path.exists(dec_path):
-            print('Skipping (already decoded)', dec_path)
+    for root, _, files in os.walk(input_dir):
+        # Find all the images in root with various formats (e.g., PNG, JPEG, TIFF, etc.)
+        image_files = list_images(root)
+        # if there are no images in the directory, skip
+        if not image_files:
             continue
-        else:
+        # Create the subdirectory in the save directory for the particular folder we are saving
+        sub_save_dir = os.path.join(save_dir, os.path.relpath(root, input_dir))
+        os.makedirs(sub_save_dir, exist_ok=True)
+        # Process the images
+        for image_path in tqdm(image_files):
+            file = os.path.basename(image_path)
+            extension = file.split(".")[-1]
+            bin_path = os.path.join(sub_save_dir, file.replace(f'.{extension}', ""))
+            dec_path = os.path.join(sub_save_dir, file.replace(f'.{extension}', ".png"))
+            if os.path.exists(dec_path):
+                print('Skipping (already decoded)', dec_path)
+                continue
             coder.encode_and_decode(image_path, bin_path, dec_path)
-        # coder.set_model_loaded(True)
-        # coder.set_first_time(False)
 
 # --- Main --- #
 if __name__ == "__main__":
