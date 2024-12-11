@@ -34,49 +34,26 @@ def process_dir_with_jpeg(input_dir: str, qf: int, save_dir: str):
     # Process all the files in the input directory
     # and save the decoded images in the save directory
 
-    # List of images in the input directory with various formats (e.g., PNG, JPEG, TIFF, etc.)
-    image_files = list_images(input_dir)
-
-    if not image_files: # lsun case
-
-        # to deal with lsun dataset which has subfolders:
-        for root, dirs, files in os.walk(input_dir):
-
-            for sub_r in dirs:
-                # working folder, where we have to find the image files
-                img_dir = os.path.join(root, sub_r)
-
-                image_files = list_images(img_dir)
-                sub_save_dir = os.path.join(save_dir, sub_r)
-                os.makedirs(sub_save_dir, exist_ok=True)
-
-                for image_path in tqdm(image_files):
-                    # Get the filename and the extension
-                    file = os.path.basename(image_path)
-                    extension = file.split(".")[-1]
-                    out_path = os.path.join(sub_save_dir, file.replace(f'.{extension}', ".jpg"))
-                    if os.path.exists(out_path):
-                        print('Skipping (already decoded)', out_path)
-                        continue
-                    else:
-                        # JPEG COMPRESSION
-                        img = Image.open(image_path)
-                        img.save(out_path, format='JPEG', quality=qf)
-
-    else: # standard case
-
+    # Walk through the input directory
+    for root, _, files in os.walk(input_dir):
+        # Find all the images in root
+        image_files = list_images(root)
+        # if there are no images in the directory, skip
+        if not image_files:
+            continue
+        # Create the subdirectory in the save directory for the particular folder we are saving
+        sub_save_dir = os.path.join(save_dir, os.path.relpath(root, input_dir))
+        os.makedirs(sub_save_dir, exist_ok=True)
+        # Process the images
         for image_path in tqdm(image_files):
-            # Get the filename and the extension
             file = os.path.basename(image_path)
             extension = file.split(".")[-1]
-            out_path = os.path.join(save_dir, file.replace(f'.{extension}', ".jpg"))
+            out_path = os.path.join(sub_save_dir, file.replace(f'.{extension}', ".jpg"))
             if os.path.exists(out_path):
                 print('Skipping (already decoded)', out_path)
                 continue
-            else:
-                # JPEG COMPRESSION
-                img = Image.open(image_path)
-                img.save(out_path, format='JPEG', quality=qf)
+            img = Image.open(image_path)
+            img.save(out_path, format='JPEG', quality=qf)
 
 
 # --- Main --- #
