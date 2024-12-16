@@ -52,7 +52,7 @@ def process_dir_with_jpeg(input_dir: str, qf: int, save_dir: str):
             if os.path.exists(out_path):
                 print('Skipping (already decoded)', out_path)
                 continue
-            img = Image.open(image_path)
+            img = Image.open(image_path).convert('RGB')
             img.save(out_path, format='JPEG', quality=qf)
 
 
