@@ -7,6 +7,10 @@ Edoardo Daniele Cannas - edoardodaniele.cannas@polimi.it
 
 JPEG_AI_PATH = '/nas/home/ecannas/third_party_code/jpeg-ai-reference-software'  # put here the path to the jpeg-ai-reference-software
 
+PRISTINE_ROOT_DIR = '/nas/public/exchange/JPEG-AI/data/TEST'
+
+SYNTHETIC_ROOT_DIR = '/nas/public/exchange/JPEG-AI/data/TEST_SYN'
+
 MODELS_LIST = {'Grag2021_progan': 'Grag2021_progan',
                'Grag2021_latent': 'Grag2021_latent',
                'Ohja2023': 'Ohja2023',
@@ -37,7 +41,7 @@ SYN_TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco', 'ffhq'],
              'Wang2020JPEG01': ['lsun', 'imagenet', 'coco', 'celeba', 'raw_camera'],
              'Wang2020JPEG05': ['lsun', 'imagenet', 'coco', 'celeba', 'raw_camera']}
 
-SYN_DETECTOR_MAPPING = {'Grag2021_progan': 'Corvi2023',
+SYN_DETECTOR_DATASET_MAPPING = {'Grag2021_progan': 'Corvi2023',
              'Grag2021_latent': 'Corvi2023',
              'Ohja2023': 'Ohja2023',
              'Ohja2023ResNet50': 'Ohja2023',
