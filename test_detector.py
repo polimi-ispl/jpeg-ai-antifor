@@ -29,27 +29,9 @@ import pandas as pd
 
 # --- Helpers functions and classes --- #
 
-def main(args: argparse.Namespace):
+def run_test_case(test_type: str, input_dir: str, detector_name: str, weigths_paths: str, device: torch.device,
+              all_data_info: pd.DataFrame, transforms: torch.nn.Module, batch_size: int, num_workers: int, debug: bool):
 
-    # --- Parse the params we need --- #
-    input_dir = args.input_dir
-    output_dir = args.output_dir
-    gpu = args.gpu
-    detector_name = args.detector
-    weigths_paths = args.weights_path
-    test_all = args.test_all
-    test_type = args.test_type
-    debug = args.debug
-    batch_size = args.batch_size
-    num_workers = args.num_workers
-
-    # --- Prepare the device --- #
-    device = torch.device(f'cuda:{gpu}') if torch.cuda.is_available() else torch.device('cpu')
-
-    # --- Prepare the dataset --- #
-    all_data_info = pd.read_csv(os.path.join(input_dir, 'detector_data_complete.csv'), index_col=[0, 1, 2, 3, 4])
-    all_data_info = all_data_info.loc[SYN_DETECTOR_DATASET_MAPPING[detector_name]]  # select the test data for the specific detector
-    transforms = get_transform_list(detector_name)  # get the transforms for the specific detector
     # Select the data according to the test type and instantiate the dataset
     if test_type == 'real':
         data_info = all_data_info.loc[('Pristine', 'Uncompressed')]
@@ -66,6 +48,8 @@ def main(args: argparse.Namespace):
         if debug:
             data_info = data_info.loc['imagenet']
             data_info = data_info.iloc[:10]
+    elif test_type == 'real_aug':
+        raise NotImplementedError('This case is not implemented yet!')
     elif test_type == 'synthetic':
         data_info = all_data_info.loc[('Synthetic', 'Uncompressed')]
         if debug:
@@ -81,6 +65,8 @@ def main(args: argparse.Namespace):
         if debug:
             data_info = data_info.loc['imagenet']
             data_info = data_info.iloc[:10]
+    elif test_type == 'synthetic_aug':
+        raise NotImplementedError('This case is not implemented yet!')
     # TODO: add the case for real and synthetic augmented images
     # Create the dataloader
     dataset = ImgDataset(root_dir=input_dir, data_df=data_info, transform=transforms)
@@ -102,20 +88,63 @@ def main(args: argparse.Namespace):
         # Process the batch
         logits = detector.process_sample(image)
         # Save the results
-        results.iloc[count:count+batch_size, logits_idx] = logits
+        results.iloc[count:count + batch_size, logits_idx] = logits
         # Update the count
         count += batch_size
 
-    # --- Save the results --- #
-    output_dir = os.path.join(output_dir, detector_name)
-    os.makedirs(output_dir, exist_ok=True)
-    save_path = os.path.join(output_dir, test_type)
-    if debug:
-        results.to_csv(save_path + '_debug.csv')
-    elif test_all:
-        results.to_csv(save_path+'_all_dataset.csv')
+    return results
+
+def main(args: argparse.Namespace):
+
+    # --- Parse the params we need --- #
+    input_dir = args.input_dir
+    output_dir = args.output_dir
+    gpu = args.gpu
+    detector_name = args.detector
+    weigths_paths = args.weights_path
+    test_all = args.test_all
+    test_type = args.test_type
+    debug = args.debug
+    batch_size = args.batch_size
+    num_workers = args.num_workers
+
+    # --- Prepare the device --- #
+    device = torch.device(f'cuda:{gpu}') if torch.cuda.is_available() else torch.device('cpu')
+
+    # --- Prepare the dataset --- #
+    all_data_info = pd.read_csv(os.path.join(input_dir, 'detector_data_complete.csv'), index_col=[0, 1, 2, 3, 4])
+    all_data_info = all_data_info.loc[SYN_DETECTOR_DATASET_MAPPING[detector_name]]  # select the test data for the specific detector
+    transforms = get_transform_list(detector_name)  # get the transforms for the specific detector
+
+    # --- Run the test --- #
+    if test_all:
+        tests = ['real', 'real_JPEGAI', 'real_JPEG', 'real_aug', 'synthetic', 'synthetic_JPEGAI', 'synthetic_JPEG',
+                 'synthetic_aug']
+        for test_case in tests:
+            results = run_test_case(test_case, input_dir, detector_name, weigths_paths, device, all_data_info, transforms,
+                                    batch_size, num_workers, debug)
+            # --- Save the results --- #
+            output_dir = os.path.join(output_dir, detector_name)
+            os.makedirs(output_dir, exist_ok=True)
+            save_path = os.path.join(output_dir, test_case)
+            if debug:
+                results.to_csv(save_path + '_debug.csv')
+            else:
+                results.to_csv(save_path + '.csv')
     else:
-        results.to_csv(save_path+'.csv')
+        results = run_test_case(test_type, input_dir, detector_name, weigths_paths, device, all_data_info, transforms,
+                                batch_size, num_workers, debug)
+
+        # --- Save the results --- #
+        output_dir = os.path.join(output_dir, detector_name)
+        os.makedirs(output_dir, exist_ok=True)
+        save_path = os.path.join(output_dir, test_type)
+        if debug:
+            results.to_csv(save_path + '_debug.csv')
+        elif test_all:
+            results.to_csv(save_path+'_all_dataset.csv')
+        else:
+            results.to_csv(save_path+'.csv')
 
 
     return
@@ -162,5 +191,3 @@ if __name__ == '__main__':
     if args.slack:
         slack_m.to_user(recipient='edo.cannas', message=f'Test for {args.detector} completed!')
     sys.exit(0)
-    # TODO: test previous experiments to see if everything runs as before
-    # TODO: test the synthetic JPEG dataset

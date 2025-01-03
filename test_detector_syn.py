@@ -38,7 +38,7 @@ def main(args: argparse.Namespace):
 
     # --- Prepare the dataset --- #
     data_info = pd.read_csv(os.path.join(input_dir, 'all_dataset_info.csv'))
-    data_info = data_info.loc[data_info['detector']==SYN_DETECTOR_MAPPING[detector_name]]
+    data_info = data_info.loc[data_info['detector'] == SYN_DETECTOR_DATASET_MAPPING[detector_name]]
     if not test_all:
         data_info = data_info.loc[data_info['dataset'].isin(SYN_TEST_DATA[detector_name])]
     if debug:
