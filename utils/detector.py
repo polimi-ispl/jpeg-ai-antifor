@@ -13,12 +13,14 @@ import numpy as np
 import torch
 import yaml
 from PIL import Image
+from pre_commit.util import yaml_load
 from tqdm import tqdm
 from multiprocessing import cpu_count
 from .params import *
+from torch.nn import functional as F
 
 # --- Helpers functions and classes --- #
-class Detector:
+class SynImgDetector:
     def __init__(self, detector, weights_path, device='cuda:0'):
         self.detector = detector
         self.weights_path = weights_path
@@ -81,7 +83,7 @@ class Detector:
             model = model.to(self.device).eval()
             return model
         else:
-            raise NotImplementedError(f"Detector {self.detector} not implemented")
+            raise NotImplementedError(f"SynImgDetector {self.detector} not implemented")
 
 
     def process_sample(self, sample: torch.Tensor):
@@ -128,4 +130,50 @@ class Detector:
                     output = output
             elif self.detector in ['Wang2020JPEG01', 'Wang2020JPEG05']:
                 output = output.cpu().numpy()
+            return output
+
+class ImgSplicingDetector:
+    def __init__(self, detector, weights_path, device='cuda:0'):
+        self.detector = detector
+        self.weights_path = weights_path
+        self.device = device
+        self.model = self.init_model()
+
+    def init_model(self):
+        if self.detector == 'TruFor':
+            config = yaml_load(self.weights_path('trufor.yaml'))
+            config.TEST.MODEL_FILE = os.path.join(self.weights_path, 'weights', 'trufor.pth.tar')
+            if config.TEST.MODEL_FILE:
+                model_state_file = config.TEST.MODEL_FILE
+            else:
+                raise ValueError("Model file is not specified.")
+
+            print('=> loading model from {}'.format(model_state_file))
+            checkpoint = torch.load(model_state_file, map_location=torch.device(self.device))
+
+            if config.MODEL.NAME == 'detconfcmx':
+                from utils.third_party.TruFor.test_docker.src.models.cmx.builder_np_conf import myEncoderDecoder as confcmx
+                model = confcmx(cfg=config)
+            else:
+                raise NotImplementedError('Model not implemented')
+
+            model.load_state_dict(checkpoint['state_dict'])
+            model = model.eval().to(self.device)
+            return model
+        else:
+            raise NotImplementedError(f"ImgSplicingDetector {self.detector} not implemented")
+
+
+    def process_sample(self, sample: torch.Tensor):
+        with torch.no_grad():
+            sample = sample.to(self.device)
+            if self.detector == 'TruFor':
+                # We are just interested in the final anomaly map, ignore for the moment the other outputs
+                output, conf, det, npp = self.model(sample)
+                # Process the output
+                output = torch.squeeze(output, 0)
+                output = F.softmax(output, dim=0)[1]
+                output = output.cpu().numpy()
+            else:
+                raise NotImplementedError(f"ImgSplicingDetector {self.detector} not implemented")
             return output
