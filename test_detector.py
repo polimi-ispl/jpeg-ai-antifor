@@ -24,7 +24,7 @@ from multiprocessing import cpu_count
 from utils.params import *
 from utils.data import get_transform_list, ImgDataset
 from utils.slack import ISPLSlack
-from utils.detector import Detector
+from utils.detector import SynImgDetector
 import pandas as pd
 
 # --- Helpers functions and classes --- #
@@ -109,7 +109,7 @@ def main(args: argparse.Namespace):
     device = torch.device(f'cuda:{gpu}') if torch.cuda.is_available() else torch.device('cpu')
 
     # --- Prepare the detector --- #
-    detector = Detector(detector_name, weigths_paths, device=device)
+    detector = SynImgDetector(detector_name, weigths_paths, device=device)
 
     # --- Prepare the dataset --- #
     all_data_info = pd.read_csv(os.path.join(input_dir, 'detector_data_complete.csv'), index_col=[0, 1, 2, 3, 4])

@@ -16,7 +16,7 @@ from multiprocessing import cpu_count
 from utils.params import *
 from utils.data import JPEGDataset, get_transform_list
 from utils.slack import ISPLSlack
-from utils.detector import Detector
+from utils.detector import SynImgDetector
 import pandas as pd
 
 # --- Helpers functions and classes --- #
@@ -55,7 +55,7 @@ def main(args: argparse.Namespace):
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=cpu_count()//2)
 
     # --- Prepare the detector --- #
-    detector = Detector(detector_name, weigths_paths, device=device)
+    detector = SynImgDetector(detector_name, weigths_paths, device=device)
 
     # --- Prepare the output dataframe --- #
     results = data_info.copy()
