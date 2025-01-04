@@ -121,16 +121,20 @@ def main(args: argparse.Namespace):
         tests = ['real', 'real_JPEGAI', 'real_JPEG', 'real_aug', 'synthetic', 'synthetic_JPEGAI', 'synthetic_JPEG',
                  'synthetic_aug']
         for test_case in tests:
-            results = run_test_case(test_case, input_dir, detector_name, weigths_paths, device, all_data_info, transforms,
-                                    batch_size, num_workers, debug)
-            # --- Save the results --- #
-            output_dir = os.path.join(output_dir, detector_name)
-            os.makedirs(output_dir, exist_ok=True)
-            save_path = os.path.join(output_dir, test_case)
-            if debug:
-                results.to_csv(save_path + '_debug.csv')
-            else:
-                results.to_csv(save_path + '.csv')
+            try:
+                results = run_test_case(test_case, input_dir, detector_name, weigths_paths, device, all_data_info, transforms,
+                                        batch_size, num_workers, debug)
+                # --- Save the results --- #
+                output_dir = os.path.join(output_dir, detector_name)
+                os.makedirs(output_dir, exist_ok=True)
+                save_path = os.path.join(output_dir, test_case)
+                if debug:
+                    results.to_csv(save_path + '_debug.csv')
+                else:
+                    results.to_csv(save_path + '.csv')
+            except Exception as e:
+                print(f"Error in test case {test_case}: {e}")
+                continue
     else:
         results = run_test_case(test_type, input_dir, detector_name, weigths_paths, device, all_data_info, transforms,
                                 batch_size, num_workers, debug)
