@@ -45,11 +45,11 @@ SYN_DETECTOR_DATASET_MAPPING = {'Grag2021_progan': 'Corvi2023',
              'Grag2021_latent': 'Corvi2023',
              'Ohja2023': 'Ohja2023',
              'Ohja2023ResNet50': 'Ohja2023',
-             'CLIP2024': 'CLIP2024',
-             'CLIP2024Plus': 'CLIP2024',
+             'CLIP2024': 'Cozzolino2024',
+             'CLIP2024Plus': 'Cozzolino2024',
              'Corvi2023': 'Corvi2023',
-             'Wang2020JPEG01': 'Wang2020JPEG01',
-             'Wang2020JPEG05': 'Wang2020JPEG01'}
+             'Wang2020JPEG01': 'Wang2020',
+             'Wang2020JPEG05': 'Wang2020'}
 
 DETECTORS = ['Grag2021_progan', 'Grag2021_latent', 'Ohja2023', 'Ohja2023ResNet50',
              'CLIP2024', 'CLIP2024Plus', 'Corvi2023', 'Wang2020JPEG01', 'Wang2020JPEG05']
