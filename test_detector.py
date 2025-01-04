@@ -29,8 +29,8 @@ import pandas as pd
 
 # --- Helpers functions and classes --- #
 
-def run_test_case(test_type: str, input_dir: str, detector_name: str, weigths_paths: str, device: torch.device,
-              all_data_info: pd.DataFrame, transforms: torch.nn.Module, batch_size: int, num_workers: int, debug: bool):
+def run_test_case(test_type: str, input_dir: str, detector: str, device: torch.device,
+                  all_data_info: pd.DataFrame, transforms: torch.nn.Module, batch_size: int, num_workers: int, debug: bool):
 
     # Select the data according to the test type and instantiate the dataset
     if test_type == 'real':
@@ -72,9 +72,6 @@ def run_test_case(test_type: str, input_dir: str, detector_name: str, weigths_pa
     dataset = ImgDataset(root_dir=input_dir, data_df=data_info, transform=transforms)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
-    # --- Prepare the detector --- #
-    detector = Detector(detector_name, weigths_paths, device=device)
-
     # --- Prepare the output dataframe --- #
     results = data_info.copy()
     results['logits'] = 0.0
@@ -111,6 +108,9 @@ def main(args: argparse.Namespace):
     # --- Prepare the device --- #
     device = torch.device(f'cuda:{gpu}') if torch.cuda.is_available() else torch.device('cpu')
 
+    # --- Prepare the detector --- #
+    detector = Detector(detector_name, weigths_paths, device=device)
+
     # --- Prepare the dataset --- #
     all_data_info = pd.read_csv(os.path.join(input_dir, 'detector_data_complete.csv'), index_col=[0, 1, 2, 3, 4])
     all_data_info = all_data_info.loc[SYN_DETECTOR_DATASET_MAPPING[detector_name]]  # select the test data for the specific detector
@@ -129,7 +129,7 @@ def main(args: argparse.Namespace):
                 print(f"Test case {test_case} already done, skipping...")
                 continue
             try:
-                results = run_test_case(test_case, input_dir, detector_name, weigths_paths, device, all_data_info, transforms,
+                results = run_test_case(test_case, input_dir, detector, weigths_paths, device, all_data_info, transforms,
                                         batch_size, num_workers, debug)
                 # --- Save the results --- #
                 if debug:
