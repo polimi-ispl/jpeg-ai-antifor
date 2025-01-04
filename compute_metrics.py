@@ -214,7 +214,7 @@ def main(args: argparse.Namespace):
 
     # --- Save the metrics --- #
     metrics_df = pd.concat({detector: metrics}, names=['Detector', 'Dataset', 'Quality', 'Test'])
-    metrics_df.to_csv(os.path.join(results_dir, 'metrics.csv'), index=False)
+    metrics_df.to_csv(os.path.join(results_dir, detector, 'metrics.csv'))
 
     if debug:
         print(metrics_df)
