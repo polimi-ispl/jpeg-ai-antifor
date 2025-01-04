@@ -117,17 +117,21 @@ def main(args: argparse.Namespace):
     transforms = get_transform_list(detector_name)  # get the transforms for the specific detector
 
     # --- Run the test --- #
+    output_dir = os.path.join(output_dir, detector_name)
+    os.makedirs(output_dir, exist_ok=True)
     if test_all:
         tests = ['real', 'real_JPEGAI', 'real_JPEG', 'real_aug', 'synthetic', 'synthetic_JPEGAI', 'synthetic_JPEG',
                  'synthetic_aug']
         for test_case in tests:
+            # --- Prepare the save path --- #
+            save_path = os.path.join(output_dir, test_case)
+            if os.path.exists(save_path+'.csv'):
+                print(f"Test case {test_case} already done, skipping...")
+                continue
             try:
                 results = run_test_case(test_case, input_dir, detector_name, weigths_paths, device, all_data_info, transforms,
                                         batch_size, num_workers, debug)
                 # --- Save the results --- #
-                output_dir = os.path.join(output_dir, detector_name)
-                os.makedirs(output_dir, exist_ok=True)
-                save_path = os.path.join(output_dir, test_case)
                 if debug:
                     results.to_csv(save_path + '_debug.csv')
                 else:
