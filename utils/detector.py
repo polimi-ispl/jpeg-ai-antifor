@@ -44,7 +44,7 @@ class SynImgDetector:
             model = model.to(self.device).eval()
             print("Model loaded!")
             return model
-        elif self.detector == 'Ohja2023':
+        elif self.detector == 'Ojha2023':
             from utils.third_party.UniversalFakeDetect_test_code.models import get_model
             # Load the backbone model
             model = get_model('CLIP:ViT-L/14')
@@ -54,7 +54,7 @@ class SynImgDetector:
             model = model.to(self.device).eval()
             print("Model loaded!")
             return model
-        elif self.detector == 'Ohja2023ResNet50':
+        elif self.detector == 'Ojha2023ResNet50':
             from utils.third_party.UniversalFakeDetect_test_code.models import get_model
             # Load the backbone model
             model = get_model('CLIP:RN50')
@@ -64,7 +64,7 @@ class SynImgDetector:
             model = model.to(self.device).eval()
             print("Model loaded!")
             return model
-        elif self.detector in ['CLIP2024', 'CLIP2024Plus', 'Corvi2023']:
+        elif self.detector in ['Cozzolino2024-A', 'Cozzolino2024-B', 'Corvi2023']:
             from utils.third_party.ClipBased_SyntheticImageDetection_main.networks import create_architecture, load_weights
             # Load the config-file
             with open(os.path.join(self.weights_path, MODELS_LIST[self.detector], 'config.yaml')) as fid:
@@ -75,7 +75,7 @@ class SynImgDetector:
             model = load_weights(create_architecture(arch), model_path)
             model = model.to(self.device).eval()
             return model
-        elif self.detector in ['Wang2020JPEG01', 'Wang2020JPEG05']:
+        elif self.detector in ['Wang2020-A', 'Wang2020-B']:
             from utils.third_party.Wang2020CNNDetection.networks.resnet import resnet50
             model = resnet50(num_classes=1)
             state_dict = torch.load(os.path.join(self.weights_path, MODELS_LIST[self.detector]), map_location='cpu')
@@ -114,9 +114,9 @@ class SynImgDetector:
                     output = np.mean(output, (1, 2))
                 else:
                     output = output
-            elif self.detector == 'Ohja2023':
+            elif self.detector == 'Ojha2023':
                 output = output.flatten().cpu().numpy()
-            elif self.detector in ['Ohja2023ResNet50', 'CLIP2024', 'CLIP2024Plus', 'Corvi2023']:
+            elif self.detector in ['Ojha2023ResNet50', 'Cozzolino2024-A', 'Cozzolino2024-B', 'Corvi2023']:
                 output = output.cpu().numpy()
                 if output.shape[1] == 1:
                     output = output[:, 0]
@@ -128,7 +128,7 @@ class SynImgDetector:
                     output = np.mean(output, (1, 2))
                 else:
                     output = output
-            elif self.detector in ['Wang2020JPEG01', 'Wang2020JPEG05']:
+            elif self.detector in ['Wang2020-A', 'Wang2020-B']:
                 output = output.cpu().numpy()
             return output
 
