@@ -1,0 +1,23 @@
+Requirement already satisfied: tqdm in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (4.67.0)
+Collecting yacs
+  Downloading yacs-0.1.8-py3-none-any.whl.metadata (639 bytes)
+Requirement already satisfied: timm in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (1.0.11)
+Requirement already satisfied: numpy==1.21.5 in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (1.21.5)
+Requirement already satisfied: PyYAML in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (from yacs) (6.0.2)
+Requirement already satisfied: torch in /home/ecannas/.local/lib/python3.10/site-packages (from timm) (1.13.1+cu117)
+Requirement already satisfied: torchvision in /home/ecannas/.local/lib/python3.10/site-packages (from timm) (0.14.1+cu117)
+Requirement already satisfied: huggingface_hub in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (from timm) (0.26.2)
+Requirement already satisfied: safetensors in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (from timm) (0.4.5)
+Requirement already satisfied: filelock in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (from huggingface_hub->timm) (3.16.1)
+Requirement already satisfied: fsspec>=2023.5.0 in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (from huggingface_hub->timm) (2024.10.0)
+Requirement already satisfied: packaging>=20.9 in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (from huggingface_hub->timm) (24.2)
+Requirement already satisfied: requests in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (from huggingface_hub->timm) (2.32.3)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in /home/ecannas/.local/lib/python3.10/site-packages (from huggingface_hub->timm) (4.4.0)
+Requirement already satisfied: pillow!=8.3.*,>=5.3.0 in /home/ecannas/.local/lib/python3.10/site-packages (from torchvision->timm) (9.4.0)
+Requirement already satisfied: charset-normalizer<4,>=2 in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (from requests->huggingface_hub->timm) (3.4.0)
+Requirement already satisfied: idna<4,>=2.5 in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (from requests->huggingface_hub->timm) (3.10)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (from requests->huggingface_hub->timm) (2.2.3)
+Requirement already satisfied: certifi>=2017.4.17 in /nas/home/ecannas/miniconda3/envs/trufor/lib/python3.10/site-packages (from requests->huggingface_hub->timm) (2024.8.30)
+Downloading yacs-0.1.8-py3-none-any.whl (14 kB)
+Installing collected packages: yacs
+Successfully installed yacs-0.1.8
