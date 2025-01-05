@@ -4,7 +4,8 @@ We relied on the following detectors:
 1. *Gragnaniello2021*, available in the [DMImageDetection](https://github.com/grip-unina/DMimageDetection/tree/main) repository;
 2. *Corvi2023*, *Cozzolino2024-A*, and *Cozzolino2024-B*, available  in the [ClipBased-SyntheticImageDetection](https://github.com/grip-unina/ClipBased-SyntheticImageDetection) repository;
 3. *Wang2020-A* and *Wang2020-B*, available in the [CNNDetection](https://github.com/PeterWang512/CNNDetection?tab=readme-ov-file) repo;
-4. *Ojha2023*, available in the [UniversalFakeDetect](https://github.com/WisconsinAIVision/UniversalFakeDetect) repo.
+4. *Ojha2023*, available in the [UniversalFakeDetect](https://github.com/WisconsinAIVision/UniversalFakeDetect) repo;
+5. *TruFor*, available in the [TruFor](https://github.com/grip-unina/TruFor/tree/main) repository.
 
 ## Installation
 Each detector (fortunately) is based on PyTorch, so the `environment.yml` file is the same for all of them.  
