@@ -44,75 +44,81 @@ def main(args: argparse.Namespace):
     metrics[dataset_name]['All'].append(
         pd.DataFrame([compute_all_metrics(results_pristine, results_pristine_jpegai)],
                      index=pd.Index(['Real_vs_Real-JPEGAI']),
-                     columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                     columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
     metrics[dataset_name]['All'].append(pd.DataFrame([compute_all_metrics(results_pristine, results_pristine_jpeg)],
-                                                        index=pd.Index(['Real_vs_Real-JPEG']),
-                                                        columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                                                     index=pd.Index(['Real_vs_Real-JPEG']),
+                                                     columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0',
+                                                              'fnr_thr0', 'tnr_thr0']))
     # Synthetic test cases
     metrics[dataset_name]['All'].append(
         pd.DataFrame([compute_all_metrics(results_synthetic, results_synthetic_jpegai)],
                      index=pd.Index(['Synth_vs_Synth-JPEGAI']),
-                     columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                     columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
     metrics[dataset_name]['All'].append(
         pd.DataFrame([compute_all_metrics(results_synthetic, results_synthetic_jpeg)],
                      index=pd.Index(['Synth_vs_Synth-JPEG']),
-                     columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                     columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
     # Pristine VS Synthetic test cases
     metrics[dataset_name]['All'].append(pd.DataFrame([compute_all_metrics(results_pristine, results_synthetic)],
-                                                        index=pd.Index(['Real_vs_Synth']),
-                                                        columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                                                     index=pd.Index(['Real_vs_Synth']),
+                                                     columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0',
+                                                              'fnr_thr0', 'tnr_thr0']))
     metrics[dataset_name]['All'].append(
         pd.DataFrame([compute_all_metrics(results_pristine_jpeg, results_synthetic_jpeg)],
                      index=pd.Index(['Real-JPEG_vs_Synth-JPEG']),
-                     columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                     columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
     metrics[dataset_name]['All'].append(
         pd.DataFrame([compute_all_metrics(results_pristine_jpegai, results_synthetic_jpegai)],
                      index=pd.Index(['Real-JPEGAI_vs_Synth-JPEGAI']),
-                     columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                     columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
     metrics[dataset_name]['All'] = pd.concat(metrics[dataset_name]['All'])
 
     # Divide by quality factor and target_bpp
     for idx, target_bpp in enumerate(results_pristine_jpegai['target_bpp'].unique()):
-
         part_results = []
 
         # Pristine test cases
         dataset = results_pristine_jpegai.loc[results_pristine_jpegai['target_bpp'] == target_bpp]
         part_results.append(pd.DataFrame([compute_all_metrics(results_pristine, dataset)],
                                          index=pd.Index(['Real_vs_Real-JPEGAI']),
-                                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0',
+                                                  'tnr_thr0']))
         # Synthetic test cases
         dataset = results_synthetic_jpegai.loc[results_synthetic_jpegai['target_bpp'] == target_bpp]
         part_results.append(pd.DataFrame([compute_all_metrics(results_synthetic, dataset)],
                                          index=pd.Index(['Synth_vs_Synth-JPEGAI']),
-                                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0',
+                                                  'tnr_thr0']))
         # Pristine VS Synthetic test cases
         dataset_pristine = results_pristine_jpegai.loc[results_pristine_jpegai['target_bpp'] == target_bpp]
         dataset_syn = results_synthetic_jpegai.loc[results_synthetic_jpegai['target_bpp'] == target_bpp]
         part_results.append(pd.DataFrame([compute_all_metrics(dataset_pristine, dataset_syn)],
                                          index=pd.Index(['Real-JPEGAI_vs_Synth-JPEGAI']),
-                                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0',
+                                                  'tnr_thr0']))
         metrics[dataset_name][target_bpp] = pd.concat(part_results)
     for idx, qf in enumerate(results_pristine_jpeg['qf'].dropna().unique()):
-
         part_results = []
 
         # Pristine test cases
         dataset = results_pristine_jpeg.loc[results_pristine_jpeg['qf'] == qf]
         part_results.append(pd.DataFrame([compute_all_metrics(results_pristine, dataset)],
                                          index=pd.Index(['Real_vs_Real-JPEG']),
-                                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0',
+                                                  'tnr_thr0']))
         # Synthetic test cases
         dataset = results_synthetic_jpeg.loc[results_synthetic_jpeg['qf'] == qf]
         part_results.append(pd.DataFrame([compute_all_metrics(results_synthetic, dataset)],
                                          index=pd.Index(['Synth_vs_Synth-JPEG']),
-                                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0',
+                                                  'tnr_thr0']))
         # Pristine VS Synthetic test cases
         dataset_pristine = results_pristine_jpeg.loc[results_pristine_jpeg['qf'] == qf]
         dataset_syn = results_synthetic_jpeg.loc[results_synthetic_jpeg['qf'] == qf]
         part_results.append(pd.DataFrame([compute_all_metrics(dataset_pristine, dataset_syn)],
                                          index=pd.Index(['Real-JPEG_vs_Synth-JPEG']),
-                                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0',
+                                                  'tnr_thr0']))
         metrics[dataset_name][qf] = pd.concat(part_results)
 
     # --- Considering the single datasets separately
@@ -128,39 +134,38 @@ def main(args: argparse.Namespace):
         metrics[dataset_name]['All'].append(pd.DataFrame(
             [compute_all_metrics(results_pristine.loc[dataset_name], results_pristine_jpegai.loc[dataset_name])],
             index=pd.Index(['Real_vs_Real-JPEGAI']),
-            columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+            columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
         metrics[dataset_name]['All'].append(pd.DataFrame(
             [compute_all_metrics(results_pristine.loc[dataset_name], results_pristine_jpeg.loc[dataset_name])],
             index=pd.Index(['Real_vs_Real-JPEG']),
-            columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+            columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
         # Synthetic test cases
         metrics[dataset_name]['All'].append(pd.DataFrame(
             [compute_all_metrics(results_synthetic.loc[dataset_name], results_synthetic_jpegai.loc[dataset_name])],
             index=pd.Index(['Synth_vs_Synth-JPEGAI']),
-            columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+            columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
         metrics[dataset_name]['All'].append(pd.DataFrame(
             [compute_all_metrics(results_synthetic.loc[dataset_name], results_synthetic_jpeg.loc[dataset_name])],
             index=pd.Index(['Synth_vs_Synth-JPEG']),
-            columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+            columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
         # Pristine VS Synthetic test cases
         metrics[dataset_name]['All'].append(
             pd.DataFrame([compute_all_metrics(results_pristine.loc[dataset_name], results_synthetic.loc[dataset_name])],
                          index=pd.Index(['Real_vs_Synth']),
-                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                         columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
         metrics[dataset_name]['All'].append(pd.DataFrame(
             [compute_all_metrics(results_pristine_jpeg.loc[dataset_name], results_synthetic_jpeg.loc[dataset_name])],
             index=pd.Index(['Real-JPEG_vs_Synth-JPEG']),
-            columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+            columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
         metrics[dataset_name]['All'].append(pd.DataFrame([compute_all_metrics(
             results_pristine_jpegai.loc[dataset_name], results_synthetic_jpegai.loc[dataset_name])],
-                                                            index=pd.Index(['Real-JPEGAI_vs_Synth-JPEGAI']),
-                                                            columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+            index=pd.Index(['Real-JPEGAI_vs_Synth-JPEGAI']),
+            columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
         # Concatenate everything
         metrics[dataset_name]['All'] = pd.concat(metrics[dataset_name]['All'])
 
         # Divide by quality factor and target_bpp
         for idx, target_bpp in enumerate(results_pristine_jpegai['target_bpp'].unique()):
-
             part_results = []
 
             # Pristine test cases
@@ -168,43 +173,42 @@ def main(args: argparse.Namespace):
             part_results.append(
                 pd.DataFrame([compute_all_metrics(results_pristine.loc[dataset_name], dataset.loc[dataset_name])],
                              index=pd.Index(['Real_vs_Real-JPEGAI']),
-                             columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                             columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
             # Synthetic test cases
             dataset = results_synthetic_jpegai.loc[results_synthetic_jpegai['target_bpp'] == target_bpp]
             part_results.append(
                 pd.DataFrame([compute_all_metrics(results_synthetic.loc[dataset_name], dataset.loc[dataset_name])],
                              index=pd.Index(['Synth_vs_Synth-JPEGAI']),
-                             columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                             columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
             # Pristine VS Synthetic test cases
             dataset_pristine = results_pristine_jpegai.loc[results_pristine_jpegai['target_bpp'] == target_bpp]
             dataset_syn = results_synthetic_jpegai.loc[results_synthetic_jpegai['target_bpp'] == target_bpp]
             part_results.append(
                 pd.DataFrame([compute_all_metrics(dataset_pristine.loc[dataset_name], dataset_syn.loc[dataset_name])],
                              index=pd.Index(['Real-JPEGAI_vs_Synth-JPEGAI']),
-                             columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                             columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
             metrics[dataset_name][target_bpp] = pd.concat(part_results)
         for idx, qf in enumerate(results_pristine_jpeg['qf'].dropna().unique()):
-
             part_results = []
             # Pristine test cases
             dataset = results_pristine_jpeg.loc[results_pristine_jpeg['qf'] == qf]
             part_results.append(
                 pd.DataFrame([compute_all_metrics(results_pristine.loc[dataset_name], dataset.loc[dataset_name])],
                              index=pd.Index(['Real_vs_Real-JPEG']),
-                             columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                             columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
             # Synthetic test cases
             dataset = results_synthetic_jpeg.loc[results_synthetic_jpeg['qf'] == qf]
             part_results.append(
                 pd.DataFrame([compute_all_metrics(results_synthetic.loc[dataset_name], dataset.loc[dataset_name])],
                              index=pd.Index(['Synth_vs_Synth-JPEG']),
-                             columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                             columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
             # Pristine VS Synthetic test cases
             dataset_pristine = results_pristine_jpeg.loc[results_pristine_jpeg['qf'] == qf]
             dataset_syn = results_synthetic_jpeg.loc[results_synthetic_jpeg['qf'] == qf]
             part_results.append(
                 pd.DataFrame([compute_all_metrics(dataset_pristine.loc[dataset_name], dataset_syn.loc[dataset_name])],
                              index=pd.Index(['Real-JPEG_vs_Synth-JPEG']),
-                             columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0']))
+                             columns=['WD', 'auc', 'fpr_thr0', 'tpr_thr0', 'ba_thr0', 'fnr_thr0', 'tnr_thr0']))
             metrics[dataset_name][qf] = pd.concat(part_results)
 
     # Create the final results Dataframe
