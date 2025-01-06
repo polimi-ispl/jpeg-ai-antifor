@@ -213,4 +213,4 @@ dependencies:
       - webencodings==0.5.1
       - websocket-client==1.6.1
       - widgetsnbextension==4.0.8
-prefix: /nas/home/ecannas/miniconda3/envs/jpeg-ai-antifor
+      - yacs==0.1.8
