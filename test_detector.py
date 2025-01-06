@@ -32,7 +32,7 @@ import pandas as pd
 def run_test_case(test_type: str, input_dir: str, detector: str, device: torch.device,
                   all_data_info: pd.DataFrame, transforms: torch.nn.Module, batch_size: int, num_workers: int, debug: bool):
 
-    # Select the data according to the test type and instantiate the dataset
+    # --- Select the data according to the test type and instantiate the dataset
     if test_type == 'real':
         data_info = all_data_info.loc[('Pristine', 'Uncompressed')]
         if debug:
@@ -144,13 +144,9 @@ def main(args: argparse.Namespace):
                                 batch_size, num_workers, debug)
 
         # --- Save the results --- #
-        output_dir = os.path.join(output_dir, detector_name)
-        os.makedirs(output_dir, exist_ok=True)
         save_path = os.path.join(output_dir, test_type)
         if debug:
             results.to_csv(save_path + '_debug.csv')
-        elif test_all:
-            results.to_csv(save_path+'_all_dataset.csv')
         else:
             results.to_csv(save_path+'.csv')
 
