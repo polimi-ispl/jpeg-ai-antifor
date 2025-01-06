@@ -13,7 +13,6 @@ import numpy as np
 import torch
 import yaml
 from PIL import Image
-from pre_commit.util import yaml_load
 from tqdm import tqdm
 from multiprocessing import cpu_count
 from .params import *
@@ -141,7 +140,10 @@ class ImgSplicingDetector:
 
     def init_model(self):
         if self.detector == 'TruFor':
-            config = yaml_load(os.path.join(self.weights_path, 'trufor.yaml'))
+            # Load default config
+            from utils.third_party.TruFor.test_docker.src.config import _C as config
+            # Merge the other parameters from the yaml file
+            config.merge_from_file(os.path.join(self.weights_path, 'src', 'trufor.yaml'))
             config.TEST.MODEL_FILE = os.path.join(self.weights_path, 'weights', 'trufor.pth.tar')
             if config.TEST.MODEL_FILE:
                 model_state_file = config.TEST.MODEL_FILE
@@ -149,7 +151,7 @@ class ImgSplicingDetector:
                 raise ValueError("Model file is not specified.")
 
             print('=> loading model from {}'.format(model_state_file))
-            checkpoint = torch.load(model_state_file, map_location=torch.device(self.device))
+            checkpoint = torch.load(model_state_file, map_location='cpu')
 
             if config.MODEL.NAME == 'detconfcmx':
                 from utils.third_party.TruFor.test_docker.src.models.cmx.builder_np_conf import myEncoderDecoder as confcmx
