@@ -99,7 +99,7 @@ def main(args: argparse.Namespace):
             save_path = os.path.join(output_dir, test_case)
             os.makedirs(save_path, exist_ok=True)
             # --- Check that the results directory is not empty --- #
-            if len(os.listdir(save_path)) > 10:
+            if os.path.exists(os.path.join(save_path, 'results.csv')):
                 print(f"Test case {test_case} already done, skipping...")
                 continue
             # --- Run the test --- #
