@@ -45,13 +45,15 @@ def get_transform_list(detector: str):
         return T.Compose([T.CenterCrop(224), T.ToTensor(),
                           T.Normalize(mean=[0.485, 0.456, 0.406],
                                       std=[0.229, 0.224, 0.225])])
+    elif detector == 'TruFor':
+        return T.Compose([T.ToTensor()])  # ToTensor already converts to [0, 1]
     else:
         return T.Compose([T.ToTensor()])
 
 class ImgDataset(torch.utils.data.Dataset):
     """
     Dataset class for loading images using a Pandas DataFrame for the data info.
-    The DataFrame must contain a column 'path' with the path to the images.
+    The DataFrame must have the path as part of the index.
     The __getitem__ method returns the image and a dummy label.
     """
     def __init__(self, root_dir: str, data_df: pd.DataFrame, transform: torch.nn.Module=None):
@@ -79,9 +81,9 @@ class ImgDataset(torch.utils.data.Dataset):
 
 class ImgSplicingDataset(torch.utils.data.Dataset):
     """
-    Dataset class for loading spliced images and ground-truth using a Pandas DataFrame for the data info.
-    The DataFrame must contain a column 'gt' with the path to the GT.
-    The __getitem__ method returns the image and corresponding GT.
+    Dataset class for loading spliced images and info about them using a Pandas DataFrame for the data storage.
+    The DataFrame must have the path as part of the index.
+    The __getitem__ method returns the image and a dummy label.
     """
     def __init__(self, root_dir: str, data_df: pd.DataFrame, transform: torch.nn.Module=None):
         """
@@ -99,14 +101,12 @@ class ImgSplicingDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         img_path = self.data_df.iloc[idx].name[-1]
-        label = self.data_df.iloc[idx]['gt']
         image = Image.open(img_path)
-        label = Image.open(label).convert('L')
         if image.mode != 'RGB':
             image = image.convert('RGB')
         if self.transform:
             image = self.transform(image)
-        return image, label
+        return image, torch.Tensor([0])
 
 
 if __name__ == '__main__':
