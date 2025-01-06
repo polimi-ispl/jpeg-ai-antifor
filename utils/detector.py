@@ -174,7 +174,7 @@ class ImgSplicingDetector:
                 output, conf, det, npp = self.model(sample)
                 # Process the output
                 output = torch.squeeze(output, 0)
-                output = F.softmax(output, dim=0)[1]
+                output = F.softmax(output, dim=1)[1]
                 output = output.cpu().numpy()
             else:
                 raise NotImplementedError(f"ImgSplicingDetector {self.detector} not implemented")
