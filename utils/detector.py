@@ -141,7 +141,7 @@ class ImgSplicingDetector:
 
     def init_model(self):
         if self.detector == 'TruFor':
-            config = yaml_load(self.weights_path('trufor.yaml'))
+            config = yaml_load(os.path.join(self.weights_path, 'trufor.yaml'))
             config.TEST.MODEL_FILE = os.path.join(self.weights_path, 'weights', 'trufor.pth.tar')
             if config.TEST.MODEL_FILE:
                 model_state_file = config.TEST.MODEL_FILE
