@@ -77,72 +77,16 @@ class ImgDataset(torch.utils.data.Dataset):
             image = self.transform(image)
         return image, torch.Tensor([0])
 
-class JPEGAIDataset(torch.utils.data.Dataset):
-    def __init__(self, root_dir: str, data_df: pd.DataFrame, transform: torch.nn.Module=None):
-        self.root_dir = root_dir
-        self.transform = transform
-        self.data_df = data_df
-
-    def __len__(self):
-        return len(self.data_df)
-
-    def __getitem__(self, idx):
-        img_path, label = self.data_df.iloc[idx]['path'], self.data_df.iloc[idx]['jpeg-ai_compressed']
-        image = Image.open(img_path)
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
-        if self.transform:
-            image = self.transform(image)
-        return image, torch.Tensor([label])
-
-
-class SynImgDataset(torch.utils.data.Dataset):
-    def __init__(self, root_dir: str, data_df: pd.DataFrame, transform: torch.nn.Module=None):
-        self.root_dir = root_dir
-        self.transform = transform
-        self.data_df = data_df
-
-    def __len__(self):
-        return len(self.data_df)
-
-    def __getitem__(self, idx):
-        img_path, label = self.data_df.iloc[idx]['path'], self.data_df.iloc[idx]['label']
-        image = Image.open(img_path)
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
-        if self.transform:
-            image = self.transform(image)
-        return image, torch.Tensor([label])
-
-
-class JPEGDataset(torch.utils.data.Dataset):
-    def __init__(self, root_dir: str, data_df: pd.DataFrame, transform: torch.nn.Module=None):
-        self.root_dir = root_dir
-        self.transform = transform
-        self.data_df = data_df
-
-    def __len__(self):
-        return len(self.data_df)
-
-    def __getitem__(self, idx):
-        img_path, label = self.data_df.iloc[idx]['path'], self.data_df.iloc[idx]['jpeg_compressed']
-        image = Image.open(img_path)
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
-        if self.transform:
-            image = self.transform(image)
-        return image, torch.Tensor([label])
-
 
 if __name__ == '__main__':
     # --- Test the dataset --- #
     import pandas as pd
     from utils.params import TEST_DATA
     from tqdm import tqdm
-    data_info = pd.read_csv('/nas/public/exchange/JPEG-AI/data/TEST/data_info.csv')
+    data_info = pd.read_csv('/nas/public/exchange/JPEG-AI/data/TEST/data_info_complete.csv')
     data_info = data_info.loc[data_info['dataset'].isin(TEST_DATA['Grag2021_progan'])]
     transforms = get_transform_list('Grag2021_progan')
-    dataset = JPEGAIDataset(root_dir='/nas/public/exchange/JPEG-AI/data/TEST', data_df=data_info, transform=transforms)
+    dataset = ImgDataset(root_dir='/nas/public/exchange/JPEG-AI/data/TEST', data_df=data_info, transform=transforms)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=False, num_workers=1)
     for image, label in tqdm(dataloader):
         continue
