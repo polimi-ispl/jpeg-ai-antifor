@@ -108,9 +108,9 @@ def main(args: argparse.Namespace):
                                             num_workers, debug)
                 # --- Save the results --- #
                 if debug:
-                    results.to_csv(os.path.join(output_dir, 'results_debug.csv'))
+                    results.to_csv(os.path.join(save_path, 'results_debug.csv'))
                 else:
-                    results.to_csv(os.path.join(output_dir, 'results.csv'))
+                    results.to_csv(os.path.join(save_path, 'results.csv'))
             except Exception as e:
                 print(f"Error in test case {test_case}: {e}")
                 continue
