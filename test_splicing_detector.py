@@ -17,6 +17,7 @@ from utils.slack import ISPLSlack
 from utils.detector import ImgSplicingDetector
 import pandas as pd
 from PIL import Image
+import numpy as np
 
 # --- Helpers functions and classes --- #
 
@@ -57,11 +58,11 @@ def run_splicing_test(test_type: str, input_dir: str, save_path: str, detector: 
     for batch_idx, (image, _) in enumerate(tqdm(dataloader)):
         image = image.to(device)
         mask = detector.process_sample(image)
-        mask = Image.fromarray((mask * 255).astype('uint8'))
+        # Save the mask as .npy file
         mask_save_path = os.path.join(save_path, results.iloc[batch_idx]['dataset'],
-                                      f"{results.iloc[batch_idx]['filename']}_mask.png")
+                                        f"{results.iloc[batch_idx]['filename']}_mask.npy")
         os.makedirs(os.path.dirname(mask_save_path), exist_ok=True)
-        mask.save(mask_save_path)
+        np.save(mask_save_path, mask)
         results.iloc[batch_idx, mask_path_idx] = mask_save_path
 
     return results
