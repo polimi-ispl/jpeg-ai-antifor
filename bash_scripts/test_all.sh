@@ -3,8 +3,8 @@
 
 # USER PARAMETERS (put your device configuration params here)
 DEVICE=0  # PUT THERE YOUR GPU ID
-DATA_DIR='/nas/public/exchange/JPEG-AI/data'  # PUT THERE THE PATH TO THE TEST SET
-RESULTS_DIR='./results'  # PUT THERE THE PATH TO THE RESULTS FOLDER
+DATA_DIR='/your/absolute/path/to/data'  # PUT THERE THE PATH TO THE TEST SET
+RESULTS_DIR='/your/absolute/path/to/results'  # PUT THERE THE PATH TO THE RESULTS FOLDER
 
 echo ""
 echo "-------------------------------------------------"
@@ -106,6 +106,21 @@ echo "-------------------------------------------------"
 echo "| Computing metrics for Cozzolino2024-B |"
 echo "-------------------------------------------------"
 python ../utils/compute_metrics.py --results_dir=${RESULTS_DIR} --detector Cozzolino2024-B
+echo ""
+echo "-------------------------------------------------"
+echo "| Cozzolino2024-B done! |"
+echo "-------------------------------------------------"
+
+echo ""
+echo "-------------------------------------------------"
+echo "| Testing TruFor for all tasks |"
+echo "-------------------------------------------------"
+python ../test_splicing_detector.py --input_dir=${DATA_DIR} --output_dir=${RESULTS_DIR} --gpu=${DEVICE} --detector TruFor --weights_path ../utils/third_party/TruFor/test_docker --test_all
+echo ""
+echo "-------------------------------------------------"
+echo "| Computing metrics for Cozzolino2024-B |"
+echo "-------------------------------------------------"
+python ../utils/compute_splicing_metrics.py --results_dir=${RESULTS_DIR} --detector TruFor
 echo ""
 echo "-------------------------------------------------"
 echo "| Cozzolino2024-B done! |"
