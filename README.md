@@ -14,7 +14,7 @@ In order to run our code, you need to:
 conda env create -f envinroment.yml
 conda activate jpeg-ai-antifor
 ```
-3. download the [dataset] of the paper and extract it in the *data* folder.
+3. download the [dataset] of the paper and extract it in the *data* folder (data to be uploaded soon!)
 4. download the pretrained models for the various detectors and extract them in the corresponding *utils/third_party* folder. Refer to the README.md file in the *utils/third_party* folder for more information.
 
 # Running the code
@@ -26,11 +26,14 @@ Just run:
 ```bash
 bash test_all.sh
 ```
-After computing the results, you can refer to the `notebook` folder and run a single notebook for each detector to visualize the results (i.e., `DetectorName results analysis.ipynb`.
+After computing the results, you can refer to the `notebook` folder and run a single notebook for each detector to visualize the results (i.e., `DetectorName results analysis.ipynb`).
 The notebook `Compute paper results.ipynb` allows to compute the results reported in the paper.
 
 ## Image splicing localization
-To be completed soon!!!
+The script `test_splicing_detector.py` allows to test the performance of the different considered splicing detectors on the dataset.  
+We included the tests for the splicing detectors inside the `test_all.sh` script.  
+After computing the results, you can refer to the `notebook` folder and run a single notebook for each detector to visualize the results (i.e., `DetectorName results analysis.ipynb`).
+**NOTE**: MMFusion to be added soon!
 
 # Remarks
 ## Hardware requirements
