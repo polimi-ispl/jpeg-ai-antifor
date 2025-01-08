@@ -25,26 +25,14 @@ def run_splicing_test(test_type: str, input_dir: str, save_path: str, detector: 
                      all_data_info: pd.DataFrame, transforms: torch.nn.Module, num_workers: int, debug: bool):
 
     # --- Select the data according to the test type and instantiate the dataset
-    if test_type == 'uncompressed':
-        data_info = all_data_info.loc['Uncompressed']
-        if debug:
-            data_info = data_info.loc['CASIA1']
-            data_info = data_info.iloc[:10]
-    elif test_type == 'jpegai':
-        data_info = all_data_info.loc['JPEG-AI']
-        if debug:
-            data_info = data_info.loc['CASIA1']
-            data_info = data_info.iloc[:10]
-    elif test_type == 'jpeg':
-        if 'JPEG' not in all_data_info.index:
-            raise ValueError('No JPEG dataset available')
-        else:
-            data_info = all_data_info.loc['JPEG']
-            if debug:
-                data_info = data_info.loc['CASIA1']
-                data_info = data_info.iloc[:10]
+    if test_type not in all_data_info.index:
+        raise ValueError(f'No {test_type} dataset available')
     else:
-        raise ValueError('Unknown test type')
+        data_info = all_data_info.loc[test_type]
+        if debug:
+            data_info = data_info.loc['CASIA1']
+            data_info = data_info.iloc[:10]
+
     # Create the dataloader
     dataset = ImgSplicingDataset(root_dir=input_dir, data_df=data_info, transform=transforms)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=False, num_workers=num_workers)
@@ -59,8 +47,17 @@ def run_splicing_test(test_type: str, input_dir: str, save_path: str, detector: 
         image = image.to(device)
         mask = detector.process_sample(image)
         # Save the mask as .npy file
-        mask_save_path = os.path.join(save_path, results.iloc[batch_idx]['dataset'],
-                                        f"{results.iloc[batch_idx]['filename']}_mask.npy")
+        if test_type == 'Uncompressed':
+            mask_save_path = os.path.join(save_path, results.iloc[batch_idx]['dataset'],
+                                          f"{results.iloc[batch_idx]['filename']}_mask.npy")
+        elif test_type == 'JPEGAI':
+            mask_save_path = os.path.join(save_path, results.iloc[batch_idx]['dataset'],
+                                          f"target_bpp-{100*results.iloc[batch_idx]['target_bpp']}",
+                                          f"{results.iloc[batch_idx]['filename']}_mask.npy")
+        elif test_type == 'JPEG':
+            mask_save_path = os.path.join(save_path, results.iloc[batch_idx]['dataset'],
+                                          f"qf-{int(results.iloc[batch_idx]['qf'])}",
+                                          f"{results.iloc[batch_idx]['filename']}_mask.npy")
         os.makedirs(os.path.dirname(mask_save_path), exist_ok=True)
         np.save(mask_save_path, mask)
         results.iloc[batch_idx, mask_path_idx] = mask_save_path
@@ -94,7 +91,7 @@ def main(args: argparse.Namespace):
     output_dir = os.path.join(output_dir, detector_name)
     os.makedirs(output_dir, exist_ok=True)
     if test_all:
-        tests = ['uncompressed', 'jpegai', 'jpeg']
+        tests = ['Uncompressed', 'JPEGAI', 'JPEG']
         for test_case in tests:
             # --- Prepare the save path --- #
             save_path = os.path.join(output_dir, test_case)
@@ -116,11 +113,13 @@ def main(args: argparse.Namespace):
                 print(f"Error in test case {test_case}: {e}")
                 continue
     else:
-        # --- Run the test --- #
-        results = run_splicing_test(test_type, input_dir, detector, device, all_data_info, transforms, num_workers, debug)
-        # --- Save the results --- #
+        # --- Prepare the save path --- #
         save_path = os.path.join(output_dir, test_type)
         os.makedirs(save_path, exist_ok=True)
+        # --- Run the test --- #
+        results = run_splicing_test(test_type, input_dir, save_path, detector, device, all_data_info, transforms,
+                                    num_workers, debug)
+        # --- Save the results --- #
         if debug:
             results.to_csv(os.path.join(save_path, 'results_debug.csv'))
         else:
