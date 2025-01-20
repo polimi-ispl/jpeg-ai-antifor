@@ -23,7 +23,6 @@ from tqdm import tqdm
 from multiprocessing import cpu_count
 from utils.params import *
 from utils.data import get_transform_list, ImgDataset
-from utils.slack import ISPLSlack
 from utils.detector import SynImgDetector
 import pandas as pd
 
@@ -175,23 +174,15 @@ if __name__ == '__main__':
     parser.add_argument('--test_type', type=str, help="The type of test to perform", default='real',
                         choices=['real', 'real_JPEGAI', 'real_JPEG', 'real_aug',
                                  'synthetic', 'synthetic_JPEGAI', 'synthetic_JPEG', 'synthetic_aug'])
-    parser.add_argument("--slack", action='store_true', help="Whether to send slack notifications")
     parser.add_argument('--debug', action='store_true', help="Whether to run in debug mode")
     args = parser.parse_args()
 
     # --- Call main --- #
-    slack_m = ISPLSlack()
     try:
-        if args.slack:
-            slack_m.to_user(recipient='edo.cannas', message=f'Starting test for {args.detector}...')
         main(args)
     except Exception as e:
-        if args.slack:
-            slack_m.to_user(recipient='edo.cannas', message=f'Test for {args.detector} crashed! Error: {e}')
         print(f"Error: {e}")
         sys.exit(1)
 
     # --- Exit --- #
-    if args.slack:
-        slack_m.to_user(recipient='edo.cannas', message=f'Test for {args.detector} completed!')
     sys.exit(0)

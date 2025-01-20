@@ -13,7 +13,6 @@ import torch
 from tqdm import tqdm
 from multiprocessing import cpu_count
 from utils.data import get_transform_list, ImgSplicingDataset
-from utils.slack import ISPLSlack
 from utils.detector import ImgSplicingDetector
 import pandas as pd
 from PIL import Image

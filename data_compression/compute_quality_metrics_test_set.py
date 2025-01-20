@@ -13,7 +13,6 @@ import sys
 import pandas as pd
 from tqdm import tqdm
 import argparse
-from utils.slack import ISPLSlack
 from PIL import Image
 import torch
 
@@ -150,14 +149,10 @@ if __name__ == '__main__':
 
     # --- Run main --- #
     args = parser.parse_args()
-    slack_m = ISPLSlack()
     try:
-        slack_m.to_user(recipient='edo.cannas', message='Quality report started...')
         main(args)
     except Exception as e:
-        slack_m.to_user(recipient='edo.cannas', message=f'Quality report failed. Error {e}')
         raise e
 
     # --- Exit --- #
-    slack_m.to_user(recipient='edo.cannas', message='Quality report completed!')
     sys.exit(0)
