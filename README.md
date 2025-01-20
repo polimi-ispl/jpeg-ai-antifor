@@ -2,7 +2,7 @@
 
 ![](assets/teaser.jpg)
 
-This is the official code repository for the paper *Is JPEG AI going to change image forensics?* currently under revision.  
+This is the official code repository for the paper *Is JPEG AI going to change image forensics?* currently under revision and available in preprint [here](https://arxiv.org/abs/2412.03261).  
 The repository is **under development**, so feel free to open an issue if you encounter any problems.
 
 # Getting started
@@ -48,5 +48,5 @@ We refer the user to the `data_compression/README.md` for more information on ho
 # Credits & acknowledgements
 All the detectors considered in this work are publicly available and have been developed by the respective authors.  
 We refer to the original papers for more information on the detectors and the respective licenses.  
-We would like to thank them nonetheless for making their code available and allowing us to replicate our experiments.  
+We would like to thank them nonetheless for making their code available and allowing us to perform our experiments.  
 For details on the JPEG AI Reference software, please refer to the [JPEG AI Reference software license](https://gitlab.com/wg1/jpeg-ai/jpeg-ai-reference-software/-/blob/master/LICENSE).
