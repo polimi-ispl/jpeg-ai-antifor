@@ -143,6 +143,10 @@ def double_jpegai_compression(filename, data_info, coder, target_bpp, save_dir):
 
         # --- Splice the images
         spliced_image = target_image.get_tensor()
+        # If the mask has a different shape than the image, skip it
+        if mask.shape != spliced_image.shape[:2]:
+            print(f"Skipping {filename} as the mask has different shape than the image")
+            continue
         spliced_image[:, :, mask] = source_image.get_tensor()[:, :, mask]
 
         # --- Encode and decode the image
