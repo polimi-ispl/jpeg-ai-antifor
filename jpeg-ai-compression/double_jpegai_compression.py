@@ -159,7 +159,7 @@ def double_jpegai_compression(filename, data_info, coder, target_bpp, save_dir):
         coder.encode_decode_raw_image(spliced_image, save_path)
 
         # --- Save the info
-        rows.append(pd.DataFrame(index=[save_path], data={'filename': filename, 'source_bpp': row['target_bpp']}))
+        rows.append(pd.DataFrame(index=[save_path], data={'filename': filename, 'source_bpp': row['target_bpp'], 'gt': row['gt']}))
 
     # Concatenate all the info about the images
     all_info = pd.concat(rows)
