@@ -144,8 +144,12 @@ def double_jpegai_compression(filename, data_info, coder, target_bpp, save_dir):
         # --- Splice the images
         spliced_image = target_image.get_tensor()
         # If the mask has a different shape than the image, skip it
-        if mask.shape != spliced_image.shape[:2]:
+        if mask.shape != spliced_image.shape[2:]:
             print(f"Skipping {filename} as the mask has different shape than the image")
+            # Append NaN to the results
+            rows.append(pd.DataFrame(index=[filename], data={'filename': filename, 'source_bpp': row['target_bpp'],
+                                                             'target': images[images['target_bpp'] == target_bpp/100].index.get_level_values(1).item(),
+                                                             'gt': row['gt'], 'error': 'mask shape mismatch'}))
             continue
         spliced_image[:, :, mask] = source_image.get_tensor()[:, :, mask]
 
@@ -166,9 +170,11 @@ def double_jpegai_compression(filename, data_info, coder, target_bpp, save_dir):
             coder.encode_decode_raw_image(spliced_image, save_path)
 
         # --- Save the info
-        rows.append(pd.DataFrame(index=[save_path], data={'filename': filename, 'source_bpp': row['target_bpp'],
-                                                          'target': images[images['target_bpp'] == target_bpp/100].index.get_level_values(1).item(),
-                                                          'gt': row['gt']}))
+        rows.append(pd.DataFrame(index=[filename], data={'filename': filename, 'source_bpp': row['target_bpp'],
+                                                         'target': images[images[
+                                                                              'target_bpp'] == target_bpp / 100].index.get_level_values(
+                                                             1).item(),
+                                                         'gt': row['gt'], 'error': 'None'}))
 
     # Concatenate all the info about the images
     all_info = pd.concat(rows)
