@@ -31,6 +31,7 @@ def run_splicing_test(test_type: str, input_dir: str, save_path: str, detector: 
         if debug:
             data_info = data_info.loc['DSO-1']
             data_info = data_info.iloc[:10]
+            data_info = pd.concat({'DSO-1': data_info}, names=['Dataset', 'Path'])
 
     # Create the dataloader
     dataset = ImgSplicingDataset(root_dir=input_dir, data_df=data_info, transform=transforms)
@@ -139,7 +140,8 @@ if __name__ == '__main__':
                         default="./results")
     parser.add_argument("--gpu", type=int, help="The GPU to use", default=0)
     parser.add_argument("--num_workers", type=int, help="The number of workers to use", default=cpu_count()//2)
-    parser.add_argument("--detector", type=str, help="The detector to use", default='TruFor')
+    parser.add_argument("--detector", type=str, help="The detector to use", default='TruFor',
+                        choices=['TruFor', 'ImageForensicsOSN', 'MMFusion'])
     parser.add_argument("--weights_path", type=str, help="The path to the weights of the detector",
                         default='./weights')
     parser.add_argument("--test_all", action='store_true',
