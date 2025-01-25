@@ -21,17 +21,31 @@ import cv2
 
 # --- Helpers functions --- #
 
-def gkern(self, kernlen=7, nsig=3):
+def gkern(kernlen=7, nsig=3, channels=1):
     """
-    Returns a 2D Gaussian kernel. Used by ImageForensicsOSN detector.
+    Returns a 2D Gaussian kernel with a customizable number of channels.
+
+    Parameters:
+    - kernlen: Length of the kernel (both width and height).
+    - nsig: Standard deviation for the Gaussian function.
+    - channels: Number of channels for the output kernel.
+
+    Returns:
+    - A Gaussian kernel tensor of shape (channels, kernlen, kernlen).
     """
+    # Create a small 3x3 Gaussian kernel
     rtn = [[0, 0, 0],
            [0, 1, 0],
            [0, 0, 0]]
     rtn = np.array(rtn, dtype=np.float32)
-    rtn = np.concatenate([rtn[..., None], rtn[..., None], rtn[..., None]], axis=2)
+
+    # Resize the kernel to the specified kernel length
     rtn = cv2.resize(rtn, (kernlen, kernlen))
-    return torch.from_numpy(rtn)
+
+    # Repeat the kernel for the specified number of channels
+    rtn = np.concatenate([rtn[..., None]] * channels, axis=2)  # Shape: (kernlen, kernlen, channels)
+
+    return torch.from_numpy(rtn)  # Convert to PyTorch tensor
 
 # --- Classes --- #
 
@@ -207,7 +221,7 @@ class ImgSplicingDetector:
                 output = output.cpu().numpy()
             elif self.detector == 'ImageForensicsOSN':
                 # --- Decompose the sample into patches --- #
-                H, W, _ = sample.shape
+                _, _, H, W = sample.shape
                 patches = []
                 patch_size = 896  # Patch size
 
@@ -218,14 +232,13 @@ class ImgSplicingDetector:
                     for y in range(Y):
                         if y * patch_size // 2 + patch_size > W:
                             break
-                        patch = sample[x * patch_size // 2: x * patch_size // 2 + patch_size,
-                                y * patch_size // 2: y * patch_size // 2 + patch_size, :]
+                        patch = sample[:, :, x * patch_size // 2: x * patch_size // 2 + patch_size,
+                                y * patch_size // 2: y * patch_size // 2 + patch_size]
                         patches.append(patch)
 
                 # --- Process the patches --- #
                 predictions = []
                 for patch in patches:
-                    patch = patch.unsqueeze(0)
                     patch = patch.to(self.device)
                     patch_output = self.model(patch)
                     predictions.append(patch_output)
@@ -237,11 +250,10 @@ class ImgSplicingDetector:
                 gk = gkern(patch_size)
                 gk = 1 - gk
                 gk_tensor = gk.to(self.device)
+                gk_tensor = gk_tensor.unsqueeze(0).permute(0, 3, 1, 2) # unsqueeze gk_tensor to match the number of samples permute it channel first
 
                 # Prepare the output
-                H, W = predictions[0].shape[0], predictions[0].shape[1]
-                X, Y = H // (patch_size // 2) + 1, W // (patch_size // 2) + 1
-                output = torch.ones((H, W, 3), dtype=torch.float32) * -1
+                output = torch.ones((sample.shape[0], 1, sample.shape[-2], sample.shape[-1])).to(self.device) * -1
                 patch_idx = 0
 
                 # Main patch cycle
@@ -251,19 +263,19 @@ class ImgSplicingDetector:
                     for y in range(Y - 1):
                         if y * patch_size // 2 + patch_size > W:
                             break
-                        img_tmp = predictions[patch_idx]  # get the current patch
-                        weight_cur = output[x * patch_size // 2: x * patch_size // 2 + patch_size,
-                                         y * patch_size // 2: y * patch_size // 2 + patch_size, :].clone()  # get the current weight
-                        h1, w1 = weight_cur.shape[0], weight_cur.shape[1]
+                        img_tmp = predictions[patch_idx].unsqueeze(0)  # get the current patch
+                        weight_cur = output[:, :, x * patch_size // 2: x * patch_size // 2 + patch_size,
+                                         y * patch_size // 2: y * patch_size // 2 + patch_size,].clone()  # get the current weight
+                        h1, w1 = weight_cur.shape[-2], weight_cur.shape[-1]
                         gk_tmp = F.interpolate(gk_tensor, size=(h1, w1), mode='bilinear', align_corners=False)  # interpolate the Gaussian kernel to the current patch size
                         # Compute the weights (all of this make very little sense to me, but it's the way the original code works)
                         weight_cur[weight_cur != -1] = gk_tmp[weight_cur != -1]
                         weight_cur[weight_cur == -1] = 0
                         weight_tmp = 1 - weight_cur
                         # Compute the final output
-                        output[x * patch_size // 2: x * patch_size // 2 + patch_size, y * patch_size // 2: y * patch_size // 2 + patch_size, :] = (
-                                weight_cur * output[x * patch_size // 2: x * patch_size // 2 + patch_size,
-                                                 y * patch_size // 2: y * patch_size // 2 + patch_size, :] +
+                        output[:, :, x * patch_size // 2: x * patch_size // 2 + patch_size, y * patch_size // 2: y * patch_size // 2 + patch_size] = (
+                                weight_cur * output[:, :, x * patch_size // 2: x * patch_size // 2 + patch_size,
+                                                 y * patch_size // 2: y * patch_size // 2 + patch_size] +
                                 weight_tmp * img_tmp
                         )
                         patch_idx += 1
