@@ -29,7 +29,7 @@ def run_splicing_test(test_type: str, input_dir: str, save_path: str, detector: 
     else:
         data_info = all_data_info.loc[test_type]
         if debug:
-            data_info = data_info.loc['CASIA1']
+            data_info = data_info.loc['DSO-1']
             data_info = data_info.iloc[:10]
 
     # Create the dataloader
@@ -56,6 +56,10 @@ def run_splicing_test(test_type: str, input_dir: str, save_path: str, detector: 
         elif test_type == 'JPEG':
             mask_save_path = os.path.join(save_path, results.iloc[batch_idx]['dataset'],
                                           f"qf-{int(results.iloc[batch_idx]['qf'])}",
+                                          f"{results.iloc[batch_idx]['filename']}_mask.npy")
+        elif test_type == 'Double JPEGAI':
+            mask_save_path = os.path.join(save_path, results.iloc[batch_idx]['dataset'],
+                                          f"target_bpp-{100*results.iloc[batch_idx]['target_bpp']}",
                                           f"{results.iloc[batch_idx]['filename']}_mask.npy")
         os.makedirs(os.path.dirname(mask_save_path), exist_ok=True)
         np.save(mask_save_path, mask)
@@ -90,7 +94,7 @@ def main(args: argparse.Namespace):
     output_dir = os.path.join(output_dir, detector_name)
     os.makedirs(output_dir, exist_ok=True)
     if test_all:
-        tests = ['Uncompressed', 'JPEGAI', 'JPEG']
+        tests = ['Uncompressed', 'JPEGAI', 'JPEG', 'Double JPEGAI']
         for test_case in tests:
             # --- Prepare the save path --- #
             save_path = os.path.join(output_dir, test_case)
@@ -141,7 +145,7 @@ if __name__ == '__main__':
     parser.add_argument("--test_all", action='store_true',
                         help="Whether to test all datasets or only the ones used in the corresponding detector paper")
     parser.add_argument('--test_type', type=str, help="The type of test to perform", default='real',
-                        choices=['Uncompressed', 'JPEGAI', 'JPEG'])
+                        choices=['Uncompressed', 'JPEGAI', 'JPEG', 'Double JPEGAI'])
     parser.add_argument('--debug', action='store_true', help="Whether to run in debug mode")
     args = parser.parse_args()
 
