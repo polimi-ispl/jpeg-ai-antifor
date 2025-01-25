@@ -247,7 +247,7 @@ class ImgSplicingDetector:
                 # --- Reconstruct the output from the single patches predictions --- #
 
                 # Create the Gaussian kernel
-                gk = gkern(patch_size)
+                gk = gkern(kernlen=patch_size, channels=predictions.shape[1])
                 gk = 1 - gk
                 gk_tensor = gk.to(self.device)
                 gk_tensor = gk_tensor.unsqueeze(0).permute(0, 3, 1, 2) # unsqueeze gk_tensor to match the number of samples permute it channel first
@@ -281,17 +281,17 @@ class ImgSplicingDetector:
                         patch_idx += 1
 
                     # Handle the last column (comments are the same as above)
-                    img_tmp = predictions[patch_idx]  # get the current patch
-                    weight_cur = output[x * patch_size // 2: x * patch_size // 2 + patch_size, -patch_size:, :].clone() # get the current weight
-                    h1, w1 = weight_cur.shape[0], weight_cur.shape[1]
+                    img_tmp = predictions[patch_idx].unsqueeze(0)  # get the current patch
+                    weight_cur = output[:, :, x * patch_size // 2: x * patch_size // 2 + patch_size, -patch_size:].clone() # get the current weight
+                    h1, w1 = weight_cur.shape[-2], weight_cur.shape[-1]
                     gk_tmp = F.interpolate(gk_tensor, size=(h1, w1), mode='bilinear', align_corners=False) # interpolate the Gaussian kernel to the current patch size
                     # Compute the weights (all of this make very little sense to me, but it's the way the original code works)
                     weight_cur[weight_cur != -1] = gk_tmp[weight_cur != -1]
                     weight_cur[weight_cur == -1] = 0
                     weight_tmp = 1 - weight_cur
                     # Compute the final output
-                    output[x * patch_size // 2: x * patch_size // 2 + patch_size, -patch_size:, :] = (
-                            weight_cur * output[x * patch_size // 2: x * patch_size // 2 + patch_size, -patch_size:, :] +
+                    output[:, :, x * patch_size // 2: x * patch_size // 2 + patch_size, -patch_size:] = (
+                            weight_cur * output[:, :, x * patch_size // 2: x * patch_size // 2 + patch_size, -patch_size:] +
                             weight_tmp * img_tmp
                     )
                     patch_idx += 1
@@ -300,33 +300,33 @@ class ImgSplicingDetector:
                 for y in range(Y - 1):
                     if y * patch_size // 2 + patch_size > W:
                         break
-                    img_tmp = predictions[patch_idx]
-                    weight_cur = output[-patch_size:, y * patch_size // 2: y * patch_size // 2 + patch_size, :].clone()
-                    h1, w1 = weight_cur.shape[0], weight_cur.shape[1]
+                    img_tmp = predictions[patch_idx].unsqueeze(0)
+                    weight_cur = output[:, :, -patch_size:, y * patch_size // 2: y * patch_size // 2 + patch_size].clone()
+                    h1, w1 = weight_cur.shape[-2], weight_cur.shape[-1]
                     gk_tmp = F.interpolate(gk_tensor, size=(h1, w1), mode='bilinear', align_corners=False)
 
                     weight_cur[weight_cur != -1] = gk_tmp[weight_cur != -1]
                     weight_cur[weight_cur == -1] = 0
                     weight_tmp = 1 - weight_cur
 
-                    output[-patch_size:, y * patch_size // 2: y * patch_size // 2 + patch_size, :] = (
-                            weight_cur * output[-patch_size:, y * patch_size // 2: y * patch_size // 2 + patch_size, :] +
+                    output[:, :, -patch_size:, y * patch_size // 2: y * patch_size // 2 + patch_size] = (
+                            weight_cur * output[:, :, -patch_size:, y * patch_size // 2: y * patch_size // 2 + patch_size] +
                             weight_tmp * img_tmp
                     )
                     patch_idx += 1
 
                 # Handle the bottom-right corner (again, comments are the same as above)
-                img_tmp = predictions[patch_idx]
-                weight_cur = output[-patch_size:, -patch_size:, :].clone()
-                h1, w1 = weight_cur.shape[0], weight_cur.shape[1]
+                img_tmp = predictions[patch_idx].unsqueeze(0)
+                weight_cur = output[:, :, -patch_size:, -patch_size:].clone()
+                h1, w1 = weight_cur.shape[-2], weight_cur.shape[-1]
                 gk_tmp = F.interpolate(gk_tensor, size=(h1, w1), mode='bilinear', align_corners=False)
 
                 weight_cur[weight_cur != -1] = gk_tmp[weight_cur != -1]
                 weight_cur[weight_cur == -1] = 0
                 weight_tmp = 1 - weight_cur
 
-                output[-patch_size:, -patch_size:, :] = (
-                        weight_cur * output[-patch_size:, -patch_size:, :] +
+                output[:, :, -patch_size:, -patch_size:] = (
+                        weight_cur * output[:, :, -patch_size:, -patch_size:] +
                         weight_tmp * img_tmp
                 )
                 output = output.cpu().numpy()
