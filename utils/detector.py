@@ -222,19 +222,49 @@ class ImgSplicingDetector:
             elif self.detector == 'ImageForensicsOSN':
                 # --- Decompose the sample into patches --- #
                 _, _, H, W = sample.shape
-                patches = []
                 patch_size = 896  # Patch size
 
-                X, Y = H // (patch_size // 2) + 1, W // (patch_size // 2) + 1
-                for x in range(X):
+                # Initialize list for patches
+                patches = []
+                idx = 0
+                # Calculate X and Y based on your patch size
+                X = H // (patch_size // 2) + 1
+                Y = W // (patch_size // 2) + 1
+
+                # Patch Extraction Logic
+                for x in range(X - 1):  # Loop up to X - 1
                     if x * patch_size // 2 + patch_size > H:
                         break
-                    for y in range(Y):
+                    for y in range(Y - 1):  # Loop up to Y - 1
                         if y * patch_size // 2 + patch_size > W:
                             break
+
+                        # Extract patch
                         patch = sample[:, :, x * patch_size // 2: x * patch_size // 2 + patch_size,
                                 y * patch_size // 2: y * patch_size // 2 + patch_size]
                         patches.append(patch)
+                        idx += 1
+
+                    # Extract the last column for the current row
+                    if x * patch_size // 2 + patch_size <= H:
+                        patch = sample[:, :, x * patch_size // 2: x * patch_size // 2 + patch_size,
+                                -patch_size:]  # Last column
+                        patches.append(patch)
+                        idx += 1
+
+                # Handle the last row separately
+                for y in range(Y - 1):  # Loop up to Y - 1
+                    if y * patch_size // 2 + patch_size > W:
+                        break
+
+                    patch = sample[:, :, -patch_size:, y * patch_size // 2: y * patch_size // 2 + patch_size]
+                    patches.append(patch)
+                    idx += 1
+
+                # Extract the bottom-right corner patch
+                if (patches and len(patches) < idx + 1):
+                    patch = sample[:, :, -patch_size:, -patch_size:]  # Bottom-right corner
+                    patches.append(patch)
 
                 # --- Process the patches --- #
                 predictions = []
@@ -329,7 +359,7 @@ class ImgSplicingDetector:
                         weight_cur * output[:, :, -patch_size:, -patch_size:] +
                         weight_tmp * img_tmp
                 )
-                output = output.cpu().numpy()
+                output = output.squeeze().cpu().numpy()
             else:
                 raise NotImplementedError(f"ImgSplicingDetector {self.detector} not implemented")
             return output
