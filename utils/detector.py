@@ -180,8 +180,15 @@ class ImgSplicingDetector:
             return model
         elif self.detector == 'ImageForensicsOSN':
             from utils.third_party.ImageForensicsOSN_main.models.scse import SCSEUnet
+            # Create the model
             model = SCSEUnet(backbone_arch='senet154', num_channels=3)
-            model.load_state_dict(torch.load(self.weights_path, map_location='cpu'))
+            # Load the weights
+            state_dict = torch.load(self.weights_path, map_location='cpu')
+            # Rename the keys to match the architecture
+            det_net_state_dict = {k.replace('module.det_net.', ''): v for k, v in state_dict.items() if
+                                  k.startswith('module.det_net.')}
+            # Load the weights
+            model.load_state_dict(det_net_state_dict)
             model = model.eval().to(self.device)
             return model
         else:
