@@ -162,6 +162,10 @@ class ImgSplicingDetector:
             model.load_state_dict(checkpoint['state_dict'])
             model = model.eval().to(self.device)
             return model
+        elif self.detector == 'ImageForensicsOSN':
+            from utils.third_party.ImageForensicsOSN_main.models.scse import SCSEUnet
+            model = SCSEUnet(backbone_arch='senet154', num_channels=3)
+            return model
         else:
             raise NotImplementedError(f"ImgSplicingDetector {self.detector} not implemented")
 
@@ -175,6 +179,9 @@ class ImgSplicingDetector:
                 # Process the output
                 output = torch.squeeze(output, 0)
                 output = F.softmax(output, dim=0)[1]
+                output = output.cpu().numpy()
+            elif self.detector == 'ImageForensicsOSN':
+                output = self.model(sample)
                 output = output.cpu().numpy()
             else:
                 raise NotImplementedError(f"ImgSplicingDetector {self.detector} not implemented")
