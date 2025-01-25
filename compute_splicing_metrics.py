@@ -56,7 +56,7 @@ def main(args: argparse.Namespace):
 
     # --- Load the results --- #
     all_results = []
-    for test_type in ['Uncompressed', 'JPEG', 'JPEGAI']:
+    for test_type in ['Uncompressed', 'JPEG', 'JPEGAI', 'Double JPEGAI']:
         results = pd.read_csv(os.path.join(results_dir, detector, test_type, 'results.csv'), index_col=[0, 1])
         all_results.append(pd.concat({test_type: results}, names=['Test', 'Dataset', 'Path']))
     all_results = pd.concat(all_results)
@@ -76,7 +76,7 @@ def main(args: argparse.Namespace):
             dataset_results = test_results.loc[dataset]
             metrics[test][dataset] = {}
 
-            if test in ['JPEG', 'JPEGAI']:
+            if test in ['JPEG', 'JPEGAI', 'Double JPEGAI']:
                 # --- Divide by quality
                 quality_col = 'qf' if test == 'JPEG' else 'target_bpp'
                 for quality in dataset_results[quality_col].unique():
