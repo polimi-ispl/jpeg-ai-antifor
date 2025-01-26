@@ -15,7 +15,7 @@ from multiprocessing import cpu_count
 from utils.data import get_transform_list, ImgSplicingDataset
 from utils.detector import ImgSplicingDetector
 import pandas as pd
-from PIL import Image
+from utils.params import *
 import numpy as np
 
 # --- Helpers functions and classes --- #
@@ -141,7 +141,7 @@ if __name__ == '__main__':
     parser.add_argument("--gpu", type=int, help="The GPU to use", default=0)
     parser.add_argument("--num_workers", type=int, help="The number of workers to use", default=cpu_count()//2)
     parser.add_argument("--detector", type=str, help="The detector to use", default='TruFor',
-                        choices=['TruFor', 'ImageForensicsOSN', 'MMFusion'])
+                        choices=SPLICING_DETECTORS)
     parser.add_argument("--weights_path", type=str, help="The path to the weights of the detector",
                         default='./weights')
     parser.add_argument("--test_all", action='store_true',

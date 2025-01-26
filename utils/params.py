@@ -52,5 +52,8 @@ SYN_DETECTOR_DATASET_MAPPING = {'Grag2021_progan': 'Corvi2023',
              'Wang2020-A': 'Wang2020',
              'Wang2020-B': 'Wang2020'}
 
-DETECTORS = ['Grag2021_progan', 'Grag2021_latent', 'Ojha2023', 'Ojha2023ResNet50',
-             'Cozzolino2024-A', 'Cozzolino2024-B', 'Corvi2023', 'Wang2020-A', 'Wang2020-B']
+SYN_DETECTORS = ['Grag2021_progan', 'Grag2021_latent', 'Ojha2023', 'Ojha2023ResNet50',
+             'Cozzolino2024-A', 'Cozzolino2024-B', 'Corvi2023', 'Wang2020-A', 'Wang2020-B',
+             'NPR']
+
+SPLICING_DETECTORS = ['TruFor', 'ImageForensicsOSN', 'MMFusion']
