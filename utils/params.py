@@ -19,7 +19,8 @@ MODELS_LIST = {'Grag2021_progan': 'Grag2021_progan',
                'Cozzolino2024-B': 'clipdet_latent10k_plus',
                'Corvi2023': 'Corvi2023',
                'Wang2020-A': 'blur_jpg_prob0.1.pth',
-               'Wang2020-B': 'blur_jpg_prob0.5.pth'}
+               'Wang2020-B': 'blur_jpg_prob0.5.pth',
+               'NPR': 'NPR.pth'}
 
 COMPRESSED_TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco', 'ffhq'],
              'Grag2021_latent': ['imagenet', 'coco'],

@@ -111,6 +111,13 @@ class SynImgDetector:
             model.load_state_dict(state_dict['model'])
             model = model.to(self.device).eval()
             return model
+        elif self.detector == 'NPR':
+            from utils.third_party.NPR.networks.resnet import resnet50
+            model = resnet50(num_classes=1)
+            model.load_state_dict(torch.load(os.path.join(self.weights_path, MODELS_LIST[self.detector]),
+                                             map_location='cpu'), strict=True)
+            model = model.to(self.device).eval()
+            return model
         else:
             raise NotImplementedError(f"SynImgDetector {self.detector} not implemented")
 
