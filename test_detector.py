@@ -28,7 +28,7 @@ import pandas as pd
 
 # --- Helpers functions and classes --- #
 
-def run_test_case(test_type: str, input_dir: str, detector: str, device: torch.device,
+def run_test_case(test_type: str, input_dir: str, detector: SynImgDetector, device: torch.device,
                   all_data_info: pd.DataFrame, transforms: torch.nn.Module, batch_size: int, num_workers: int, debug: bool):
 
     # --- Select the data according to the test type and instantiate the dataset
@@ -44,6 +44,11 @@ def run_test_case(test_type: str, input_dir: str, detector: str, device: torch.d
             data_info = data_info.iloc[:10]
     elif test_type == 'real_JPEG':
         data_info = all_data_info.loc[('Pristine', 'JPEG')]
+        if debug:
+            data_info = data_info.loc['imagenet']
+            data_info = data_info.iloc[:10]
+    elif test_type == 'real_doubleJPEGAI':
+        data_info = all_data_info.loc[('Pristine', 'DoubleJPEG-AI')]
         if debug:
             data_info = data_info.loc['imagenet']
             data_info = data_info.iloc[:10]
@@ -99,7 +104,7 @@ def main(args: argparse.Namespace):
     detector_name = args.detector
     weigths_paths = args.weights_path
     test_all = args.test_all
-    test_type = args.test_type
+    test_case = args.test_case
     debug = args.debug
     batch_size = args.batch_size
     num_workers = args.num_workers
@@ -128,8 +133,9 @@ def main(args: argparse.Namespace):
                 print(f"Test case {test_case} already done, skipping...")
                 continue
             try:
-                results = run_test_case(test_case, input_dir, detector, weigths_paths, device, all_data_info, transforms,
-                                        batch_size, num_workers, debug)
+                results = run_test_case(test_type=test_case, input_dir=input_dir, detector=detector, device=device,
+                              all_data_info=all_data_info, transforms=transforms, batch_size=batch_size,
+                              num_workers=num_workers, debug=debug)
                 # --- Save the results --- #
                 if debug:
                     results.to_csv(save_path + '_debug.csv')
@@ -139,11 +145,12 @@ def main(args: argparse.Namespace):
                 print(f"Error in test case {test_case}: {e}")
                 continue
     else:
-        results = run_test_case(test_type, input_dir, detector_name, weigths_paths, device, all_data_info, transforms,
-                                batch_size, num_workers, debug)
+        results = run_test_case(test_type=test_case, input_dir=input_dir, detector=detector, device=device,
+                              all_data_info=all_data_info, transforms=transforms, batch_size=batch_size,
+                              num_workers=num_workers, debug=debug)
 
         # --- Save the results --- #
-        save_path = os.path.join(output_dir, test_type)
+        save_path = os.path.join(output_dir, test_case)
         if debug:
             results.to_csv(save_path + '_debug.csv')
         else:
@@ -171,8 +178,8 @@ if __name__ == '__main__':
                         default='./weights')
     parser.add_argument("--test_all", action='store_true',
                         help="Whether to test all datasets or only the ones used in the corresponding detector paper")
-    parser.add_argument('--test_type', type=str, help="The type of test to perform", default='real',
-                        choices=['real', 'real_JPEGAI', 'real_JPEG', 'real_aug',
+    parser.add_argument('--test_case', type=str, help="The type of test to perform", default='real',
+                        choices=['real', 'real_JPEGAI', 'real_JPEG', 'real_doubleJPEGAI', 'real_aug',
                                  'synthetic', 'synthetic_JPEGAI', 'synthetic_JPEG', 'synthetic_aug'])
     parser.add_argument('--debug', action='store_true', help="Whether to run in debug mode")
     args = parser.parse_args()
