@@ -37,21 +37,25 @@ def run_test_case(test_type: str, input_dir: str, detector: SynImgDetector, devi
         if debug:
             data_info = data_info.loc['imagenet']
             data_info = data_info.iloc[:10]
+            data_info = pd.concat({'imagenet': data_info}, names=['Dataset', 'Path'])  # keep the dataset in the index
     elif test_type == 'real_JPEGAI':
         data_info = all_data_info.loc[('Pristine', 'JPEG-AI')]
         if debug:
             data_info = data_info.loc['imagenet']
             data_info = data_info.iloc[:10]
+            data_info = pd.concat({'imagenet': data_info}, names=['Dataset', 'Path'])  # keep the dataset in the index
     elif test_type == 'real_JPEG':
         data_info = all_data_info.loc[('Pristine', 'JPEG')]
         if debug:
             data_info = data_info.loc['imagenet']
             data_info = data_info.iloc[:10]
+            data_info = pd.concat({'imagenet': data_info}, names=['Dataset', 'Path'])  # keep the dataset in the index
     elif test_type == 'real_doubleJPEGAI':
         data_info = all_data_info.loc[('Pristine', 'DoubleJPEG-AI')]
         if debug:
-            data_info = data_info.loc['imagenet']
+            data_info = data_info.loc['coco']
             data_info = data_info.iloc[:10]
+            data_info = pd.concat({'coco': data_info}, names=['Dataset', 'Path'])  # keep the dataset in the index
     elif test_type == 'real_aug':
         raise NotImplementedError('This case is not implemented yet!')
     elif test_type == 'synthetic':
@@ -59,16 +63,19 @@ def run_test_case(test_type: str, input_dir: str, detector: SynImgDetector, devi
         if debug:
             data_info = data_info.loc['imagenet']
             data_info = data_info.iloc[:10]
+            data_info = pd.concat({'imagenet': data_info}, names=['Dataset', 'Path'])  # keep the dataset in the index
     elif test_type == 'synthetic_JPEGAI':
         data_info = all_data_info.loc[('Synthetic', 'JPEG-AI')]
         if debug:
             data_info = data_info.loc['imagenet']
             data_info = data_info.iloc[:10]
+            data_info = pd.concat({'imagenet': data_info}, names=['Dataset', 'Path'])  # keep the dataset in the index
     elif test_type == 'synthetic_JPEG':
         data_info = all_data_info.loc[('Synthetic', 'JPEG')]
         if debug:
             data_info = data_info.loc['imagenet']
             data_info = data_info.iloc[:10]
+            data_info = pd.concat({'imagenet': data_info}, names=['Dataset', 'Path'])  # keep the dataset in the index
     elif test_type == 'synthetic_aug':
         raise NotImplementedError('This case is not implemented yet!')
     # TODO: add the case for real and synthetic augmented images
@@ -173,7 +180,7 @@ if __name__ == '__main__':
     parser.add_argument("--gpu", type=int, help="The GPU to use", default=0)
     parser.add_argument("--num_workers", type=int, help="The number of workers to use", default=cpu_count()//2)
     parser.add_argument("--detector", type=str, help="The detector to use", default='Grag2021_progan',
-                        choices=DETECTORS)
+                        choices=SYN_DETECTORS)
     parser.add_argument("--weights_path", type=str, help="The path to the weights of the detector",
                         default='./weights')
     parser.add_argument("--test_all", action='store_true',

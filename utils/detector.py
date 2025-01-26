@@ -114,8 +114,11 @@ class SynImgDetector:
         elif self.detector == 'NPR':
             from utils.third_party.NPR.networks.resnet import resnet50
             model = resnet50(num_classes=1)
-            model.load_state_dict(torch.load(os.path.join(self.weights_path, MODELS_LIST[self.detector]),
-                                             map_location='cpu'), strict=True)
+            state_dict = torch.load(os.path.join(self.weights_path, MODELS_LIST[self.detector]), map_location='cpu')['model']
+            # Rename the keys to class the architecture
+            net_state_dict = {k.replace('module.', ''): v for k, v in state_dict.items() if
+                                  k.startswith('module.')}
+            model.load_state_dict(net_state_dict, strict=True)
             model = model.to(self.device).eval()
             return model
         else:
@@ -165,6 +168,8 @@ class SynImgDetector:
                 else:
                     output = output
             elif self.detector in ['Wang2020-A', 'Wang2020-B']:
+                output = output.cpu().numpy()
+            elif self.detector == 'NPR':
                 output = output.cpu().numpy()
             return output
 
