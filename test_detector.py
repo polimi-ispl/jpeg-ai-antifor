@@ -131,8 +131,8 @@ def main(args: argparse.Namespace):
     output_dir = os.path.join(output_dir, detector_name)
     os.makedirs(output_dir, exist_ok=True)
     if test_all:
-        tests = ['real', 'real_JPEGAI', 'real_JPEG', 'real_aug', 'synthetic', 'synthetic_JPEGAI', 'synthetic_JPEG',
-                 'synthetic_aug']
+        tests = ['real', 'real_JPEGAI', 'real_JPEG', 'real_doubleJPEGAI', 'real_aug', 'synthetic', 'synthetic_JPEGAI',
+                 'synthetic_JPEG', 'synthetic_aug']
         for test_case in tests:
             # --- Prepare the save path --- #
             save_path = os.path.join(output_dir, test_case)
