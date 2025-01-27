@@ -15,7 +15,7 @@ echo ""
 echo "-------------------------------------------------"
 echo "| Computing metrics for Wang2020-A |"
 echo "-------------------------------------------------"
-python ../utils/compute_metrics.py --results_dir=${RESULTS_DIR} --detector Wang2020-A
+python ../compute_metrics.py --results_dir=${RESULTS_DIR} --detector Wang2020-A
 echo ""
 echo "-------------------------------------------------"
 echo "| Wang2020-A done! |"
@@ -30,7 +30,7 @@ echo ""
 echo "-------------------------------------------------"
 echo "| Computing metrics for Wang2020-B |"
 echo "-------------------------------------------------"
-python ../utils/compute_metrics.py --results_dir=${RESULTS_DIR} --detector Wang2020-B
+python ../compute_metrics.py --results_dir=${RESULTS_DIR} --detector Wang2020-B
 echo ""
 echo "-------------------------------------------------"
 echo "| Wang2020-B done! |"
@@ -45,7 +45,7 @@ echo ""
 echo "-------------------------------------------------"
 echo "| Computing metrics for Gragnaniello2021 |"
 echo "-------------------------------------------------"
-python ../utils/compute_metrics.py --results_dir=${RESULTS_DIR} --detector Grag2021_progan
+python ../compute_metrics.py --results_dir=${RESULTS_DIR} --detector Grag2021_progan
 echo ""
 echo "-------------------------------------------------"
 echo "| Gragnaniello2021 done! |"
@@ -60,7 +60,7 @@ echo ""
 echo "-------------------------------------------------"
 echo "| Computing metrics for Corvi2023 |"
 echo "-------------------------------------------------"
-python ../utils/compute_metrics.py --results_dir=${RESULTS_DIR} --detector Corvi2023
+python ../compute_metrics.py --results_dir=${RESULTS_DIR} --detector Corvi2023
 echo ""
 echo "-------------------------------------------------"
 echo "| Corvi2023 done! |"
@@ -75,7 +75,7 @@ echo ""
 echo "-------------------------------------------------"
 echo "| Computing metrics for Ojha2023 |"
 echo "-------------------------------------------------"
-python ../utils/compute_metrics.py --results_dir=${RESULTS_DIR} --detector Ojha2023
+python ../compute_metrics.py --results_dir=${RESULTS_DIR} --detector Ojha2023
 echo ""
 echo "-------------------------------------------------"
 echo "| Ojha2023 done! |"
@@ -90,7 +90,7 @@ echo ""
 echo "-------------------------------------------------"
 echo "| Computing metrics for Cozzolino2024-A |"
 echo "-------------------------------------------------"
-python ../utils/compute_metrics.py --results_dir=${RESULTS_DIR} --detector Cozzolino2024-A
+python ../compute_metrics.py --results_dir=${RESULTS_DIR} --detector Cozzolino2024-A
 echo ""
 echo "-------------------------------------------------"
 echo "| Cozzolino2024-A done! |"
@@ -105,7 +105,7 @@ echo ""
 echo "-------------------------------------------------"
 echo "| Computing metrics for Cozzolino2024-B |"
 echo "-------------------------------------------------"
-python ../utils/compute_metrics.py --results_dir=${RESULTS_DIR} --detector Cozzolino2024-B
+python ../compute_metrics.py --results_dir=${RESULTS_DIR} --detector Cozzolino2024-B
 echo ""
 echo "-------------------------------------------------"
 echo "| Cozzolino2024-B done! |"
@@ -120,7 +120,7 @@ echo ""
 echo "-------------------------------------------------"
 echo "| Computing metrics for Cozzolino2024-B |"
 echo "-------------------------------------------------"
-python ../utils/compute_splicing_metrics.py --results_dir=${RESULTS_DIR} --detector TruFor
+python ../compute_splicing_metrics.py --results_dir=${RESULTS_DIR} --detector TruFor
 echo ""
 echo "-------------------------------------------------"
 echo "| Cozzolino2024-B done! |"
