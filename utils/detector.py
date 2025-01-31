@@ -18,6 +18,7 @@ from multiprocessing import cpu_count
 from .params import *
 from torch.nn import functional as F
 import cv2
+import torchvision.transforms.functional as TF
 
 # --- Helpers functions --- #
 
@@ -204,6 +205,35 @@ class ImgSplicingDetector:
             model.load_state_dict(checkpoint['state_dict'])
             model = model.eval().to(self.device)
             return model
+        elif self.detector == 'MMFusion':
+            # Load default config
+            from utils.third_party.MMFusion.configs.cmnext_init_cfg import _C as config, update_config
+
+            # Merge the other parameters from the yaml file
+            config = update_config(config, os.path.join(self.weights_path, 'experiments', 'ec_example_phase2.yaml'))
+            config.MODEL.NP_WEIGHTS = os.path.join(self.weights_path, 'pretrained', 'np_weights.pth')
+            config.ckpt = os.path.join(self.weights_path, 'ckpt', 'early_fusion_detection.pth')
+
+            # Create the models
+            from utils.third_party.MMFusion.models.modal_extract import ModalitiesExtractor
+            from utils.third_party.MMFusion.models.cmnext_conf import CMNeXtWithConf
+            extractor = ModalitiesExtractor(config.MODEL.MODALS[1:], config.MODEL.NP_WEIGHTS)
+            model = CMNeXtWithConf(config.MODEL)
+
+            # Load the weights
+            ckpt = torch.load(config.ckpt)
+            model.load_state_dict(ckpt['state_dict'])
+            extractor.load_state_dict(ckpt['extractor_state_dict'])
+
+            # Add the models to the device
+            extractor = extractor.to(self.device)
+            model = model.to(self.device)
+            extractor.eval()
+            model.eval()
+
+            # Add the extractor as an attribute of the model
+            model.extractor = extractor
+            return model
         elif self.detector == 'ImageForensicsOSN':
             from utils.third_party.ImageForensicsOSN_main.models.scse import SCSEUnet
             # Create the model
@@ -231,6 +261,15 @@ class ImgSplicingDetector:
                 output = torch.squeeze(output, 0)
                 output = F.softmax(output, dim=0)[1]
                 output = output.cpu().numpy()
+            elif self.detector == 'MMFusion':
+                # Extract the features
+                modals = self.model.extractor(sample)
+                # Normalize the features and add them to the modalities not normalized
+                modals = [TF.normalize(modals, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])] + modals
+                # Process the features
+                anomaly, confidence, detection = self.model(modals)
+                # We are interested only in the anomaly map
+                output = torch.nn.functional.softmax(anomaly, dim=1)[:, 1, :, :].squeeze().cpu().numpy()
             elif self.detector == 'ImageForensicsOSN':
                 # --- Decompose the sample into patches --- #
                 _, _, H, W = sample.shape
