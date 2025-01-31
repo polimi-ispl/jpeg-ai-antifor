@@ -1,0 +1,4 @@
+# MMFusion weights
+Use this directory to store the weights of the models used in MMFusion. The weights are stored in the following format:
+- `ckpt/model_weights.pth` --> folder containing the checkpoints files of the original repository. You can find them at this [Google Drive link](https://drive.google.com/drive/folders/1P1efXjVmYltZ7zWT-m6WoIlZgh9R_kAg?usp=sharing);
+- `pretrained/model_folder/model_weights` --> folder containing the pretrained weights of the original repository. You can find them at this [Google Drive](https://drive.google.com/drive/folders/1eTLcCZWqF-VFKayrbl0HPKzvEkThUcok?usp=sharing).
