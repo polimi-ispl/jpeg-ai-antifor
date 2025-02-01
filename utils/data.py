@@ -52,7 +52,7 @@ def get_transform_list(detector: str):
     elif detector == 'TruFor':
         return T.Compose([T.ToTensor()])  # ToTensor already converts to [0, 1]
     elif detector == 'MMFusion':
-        return T.Compose([T.ToTensorV2()])  # ToTensor already converts to [0, 1]
+        return T.Compose([T.ToTensor()])  # ToTensor already converts to [0, 1]
     elif detector == 'ImageForensicsOSN':
         return T.Compose([T.ToTensor(), T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     else:
