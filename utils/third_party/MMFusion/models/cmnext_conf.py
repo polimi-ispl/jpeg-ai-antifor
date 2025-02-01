@@ -5,8 +5,8 @@ in August 2023 @ ITI-CERTH
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
-from models.base import BaseModel
-from models.heads import SegFormerHead
+from .base import BaseModel
+from .heads import SegFormerHead
 import logging
 
 

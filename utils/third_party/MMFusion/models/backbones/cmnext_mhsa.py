@@ -5,13 +5,14 @@ in August 2023 @ ITI-CERTH
 import torch
 from torch import nn, Tensor
 from torch.nn import functional as F
-from models.layers import DropPath
 import functools
 from functools import partial
-from models.modules.ffm import FeatureFusionModule as FFM
-from models.modules.ffm import FeatureRectifyModule as FRM
-from models.modules.ffm import ChannelEmbed
-from common.utils import nchw_to_nlc, nlc_to_nchw
+import os, sys
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../'))
+from ..layers import DropPath
+from ..modules.ffm import FeatureFusionModule as FFM
+from ..modules.ffm import FeatureRectifyModule as FRM
+from ..modules.ffm import ChannelEmbed
 
 
 class Attention(nn.Module):
