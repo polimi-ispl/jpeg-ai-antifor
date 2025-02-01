@@ -268,7 +268,7 @@ class ImgSplicingDetector:
                 # Extract the features
                 modals = self.model.extractor(sample)
                 # Normalize the features and add them to the modalities not normalized
-                modals = [TF.normalize(modals, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])] + modals
+                modals = [TF.normalize(sample, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])] + modals
                 # Process the features
                 anomaly, confidence, detection = self.model(modals)
                 # We are interested only in the anomaly map
