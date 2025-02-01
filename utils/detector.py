@@ -210,9 +210,12 @@ class ImgSplicingDetector:
             from utils.third_party.MMFusion.configs.cmnext_init_cfg import _C as config, update_config
 
             # Merge the other parameters from the yaml file
-            config = update_config(config, os.path.join(self.weights_path, 'experiments', 'ec_example_phase2.yaml'))
-            config.MODEL.NP_WEIGHTS = os.path.join(self.weights_path, 'pretrained', 'np_weights.pth')
+            config = update_config(config, os.path.join(self.weights_path, 'ec_example_phase2.yaml'))
+            config.defrost()
+            config.MODEL.PRETRAINED = os.path.join(self.weights_path, 'pretrained', 'segformer/mit_b2.pth')
+            config.MODEL.NP_WEIGHTS = os.path.join(self.weights_path, 'pretrained', 'noiseprint', 'np++.pth')
             config.ckpt = os.path.join(self.weights_path, 'ckpt', 'early_fusion_detection.pth')
+            config.freeze()
 
             # Create the models
             from utils.third_party.MMFusion.models.modal_extract import ModalitiesExtractor
@@ -221,7 +224,7 @@ class ImgSplicingDetector:
             model = CMNeXtWithConf(config.MODEL)
 
             # Load the weights
-            ckpt = torch.load(config.ckpt)
+            ckpt = torch.load(config.ckpt, map_location='cpu')
             model.load_state_dict(ckpt['state_dict'])
             extractor.load_state_dict(ckpt['extractor_state_dict'])
 
