@@ -113,15 +113,60 @@ echo "-------------------------------------------------"
 
 echo ""
 echo "-------------------------------------------------"
+echo "| Testing NPR for all tasks |"
+echo "-------------------------------------------------"
+python ../test_detector.py --input_dir=${DATA_DIR} --output_dir=${RESULTS_DIR} --gpu=${DEVICE} --detector NPR --weights_path ../utils/third_party/NPR/weights --batch_size 128 --test_all
+echo ""
+echo "-------------------------------------------------"
+echo "| Computing metrics for NPR |"
+echo "-------------------------------------------------"
+python ../compute_metrics.py --results_dir=${RESULTS_DIR} --detector NPR
+echo ""
+echo "-------------------------------------------------"
+echo "| NPR done! |"
+echo "-------------------------------------------------"
+
+echo ""
+echo "-------------------------------------------------"
 echo "| Testing TruFor for all tasks |"
 echo "-------------------------------------------------"
 python ../test_splicing_detector.py --input_dir=${DATA_DIR} --output_dir=${RESULTS_DIR} --gpu=${DEVICE} --detector TruFor --weights_path ../utils/third_party/TruFor/test_docker --test_all
 echo ""
 echo "-------------------------------------------------"
-echo "| Computing metrics for Cozzolino2024-B |"
+echo "| Computing metrics for TruFor |"
 echo "-------------------------------------------------"
 python ../compute_splicing_metrics.py --results_dir=${RESULTS_DIR} --detector TruFor
 echo ""
 echo "-------------------------------------------------"
-echo "| Cozzolino2024-B done! |"
+echo "| TruFor done! |"
+echo "-------------------------------------------------"
+
+echo ""
+echo "-------------------------------------------------"
+echo "| Testing MMFusion for all tasks |"
+echo "-------------------------------------------------"
+python ../test_splicing_detector.py --input_dir=${DATA_DIR} --output_dir=${RESULTS_DIR} --gpu=${DEVICE} --detector MMFusion --weights_path ../utils/third_party/MMFusion/weights --test_all
+echo ""
+echo "-------------------------------------------------"
+echo "| Computing metrics for MMFusion |"
+echo "-------------------------------------------------"
+python ../compute_splicing_metrics.py --results_dir=${RESULTS_DIR} --detector MMFusion
+echo ""
+echo "-------------------------------------------------"
+echo "| MMFusion done! |"
+echo "-------------------------------------------------"
+
+echo ""
+echo "-------------------------------------------------"
+echo "| Testing ImageForensicsOSN for all tasks |"
+echo "-------------------------------------------------"
+python ../test_splicing_detector.py --input_dir=${DATA_DIR} --output_dir=${RESULTS_DIR} --gpu=${DEVICE} --detector ImageForensicsOSN --weights_path ../utils/third_party/ImageForensicsOSN/weights --test_all
+echo ""
+echo "-------------------------------------------------"
+echo "| Computing metrics for ImageForensicsOSN |"
+echo "-------------------------------------------------"
+python ../compute_splicing_metrics.py --results_dir=${RESULTS_DIR} --detector ImageForensicsOSN
+echo ""
+echo "-------------------------------------------------"
+echo "| MMFusion done! |"
 echo "-------------------------------------------------"

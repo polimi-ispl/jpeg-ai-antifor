@@ -33,7 +33,6 @@ The notebook `Compute paper results.ipynb` allows to compute the results reporte
 The script `test_splicing_detector.py` allows to test the performance of the different considered splicing detectors on the dataset.  
 We included the tests for the splicing detectors inside the `test_all.sh` script.  
 After computing the results, you can refer to the `notebook` folder and run a single notebook for each detector to visualize the results (i.e., `DetectorName results analysis.ipynb`).
-**NOTE**: MMFusion to be added soon!
 
 # Remarks
 ## Hardware requirements
