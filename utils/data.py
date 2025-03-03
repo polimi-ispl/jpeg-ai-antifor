@@ -49,6 +49,10 @@ def get_transform_list(detector: str):
         return T.Compose([T.Resize((256, 256)), T.ToTensor(),
                           T.Normalize(mean=[0.485, 0.456, 0.406],
                                       std=[0.229, 0.224, 0.225])])
+    elif detector == 'Mandelli2024':
+        return T.Compose([T.ToTensor(),
+                          T.Normalize(mean=[0.485, 0.456, 0.406],
+                                      std=[0.229, 0.224, 0.225])])
     elif detector == 'TruFor':
         return T.Compose([T.ToTensor()])  # ToTensor already converts to [0, 1]
     elif detector == 'MMFusion':
