@@ -122,6 +122,22 @@ class SynImgDetector:
             model.load_state_dict(net_state_dict, strict=True)
             model = model.to(self.device).eval()
             return model
+        elif self.detector == 'Mandelli2024':
+            import utils.third_party.Mandelli2024.utils.architectures as architectures
+            from collections import OrderedDict
+            # Get model class
+            net_class = getattr(architectures, 'EfficientNetB4')
+            # Instantiate and load model
+            model = net_class(n_classes=2, pretrained=False)
+            state_tmp = torch.load(self.weights_path, map_location='cpu')
+            if 'net' not in state_tmp.keys():
+                state = OrderedDict({'net': OrderedDict()})
+                [state['net'].update({'model.{}'.format(k): v}) for k, v in state_tmp.items()]
+            else:
+                state = state_tmp
+            incomp_keys = model.load_state_dict(state['net'], strict=True)
+            print(incomp_keys)
+            return model.to(self.device).eval()
         else:
             raise NotImplementedError(f"SynImgDetector {self.detector} not implemented")
 
@@ -171,6 +187,10 @@ class SynImgDetector:
             elif self.detector in ['Wang2020-A', 'Wang2020-B']:
                 output = output.cpu().numpy()
             elif self.detector == 'NPR':
+                output = output.cpu().numpy()
+            elif self.detector == 'Mandelli2024':
+                # aggregate the scores to compute the final image score
+                output = torch.mean(torch.sort(output[:, 1])[0][-600:])
                 output = output.cpu().numpy()
             return output
 
