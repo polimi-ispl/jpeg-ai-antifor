@@ -50,9 +50,7 @@ def get_transform_list(detector: str):
                           T.Normalize(mean=[0.485, 0.456, 0.406],
                                       std=[0.229, 0.224, 0.225])])
     elif detector == 'Mandelli2024':
-        return T.Compose([T.ToTensor(),
-                          T.Normalize(mean=[0.485, 0.456, 0.406],
-                                      std=[0.229, 0.224, 0.225])])
+        return RandomPatchTransform(patch_size=96, n_patches=800)
     elif detector == 'TruFor':
         return T.Compose([T.ToTensor()])  # ToTensor already converts to [0, 1]
     elif detector == 'MMFusion':
@@ -61,6 +59,31 @@ def get_transform_list(detector: str):
         return T.Compose([T.ToTensor(), T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     else:
         return T.Compose([T.ToTensor()])
+
+# --- Custom transforms --- #
+class RandomPatchTransform(torch.nn.Module):
+    def __init__(self, patch_size: int, n_patches: int):
+        super(RandomPatchTransform, self).__init__()
+        self.patch_size = patch_size
+        self.n_patches = n_patches
+        self.random_crop = T.RandomCrop(patch_size)
+        self.normalize = T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        self.resize = T.Resize(256, interpolation=T.InterpolationMode.BILINEAR)
+
+    def forward(self, img: Image.Image):
+        if img.size[0] < 256 or img.size[1] < 256:
+            img = self.resize(img)
+
+        patches = []
+        for _ in range(self.n_patches):
+            patch = self.random_crop(img)
+            patch = T.ToTensor()(patch)
+            patch = self.normalize(patch)
+            patches.append(patch)
+
+        return torch.stack(patches)
+
+# --- Dataset classes --- #
 
 class ImgDataset(torch.utils.data.Dataset):
     """
