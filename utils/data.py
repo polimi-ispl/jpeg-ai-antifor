@@ -14,6 +14,8 @@ import sys
 from torchvision import transforms as T
 import pandas as pd
 from typing import List
+import numpy as np
+import random
 
 # --- Helpers functions and classes --- #
 
@@ -71,9 +73,29 @@ class RandomPatchTransform(torch.nn.Module):
         self.resize = T.Resize(256, interpolation=T.InterpolationMode.BILINEAR)
 
     def forward(self, img: Image.Image):
+
+        # set the seeds for the random extraction of patches
+        random.seed(21)
+        np.random.seed(21)
+        torch.manual_seed(21)
+
+        # Check on image format
+        if img.ndim < 3:
+            print('Gray scale image, converting to RGB')
+            img2 = np.zeros((img.shape[0], img.shape[1], 3), dtype=np.uint8)
+            img2[:, :, 0] = img
+            img2[:, :, 1] = img
+            img2[:, :, 2] = img
+            img = img2.copy()
+        if img.shape[2] > 3:
+            print('Omitting alpha channel')
+            img = img[:, :, :3]
+
+        # Resize the image if it is too small
         if img.size[0] < 256 or img.size[1] < 256:
             img = self.resize(img)
 
+        # Extract patches
         patches = []
         for _ in range(self.n_patches):
             patch = self.random_crop(img)
