@@ -20,7 +20,8 @@ MODELS_LIST = {'Grag2021_progan': 'Grag2021_progan',
                'Corvi2023': 'Corvi2023',
                'Wang2020-A': 'blur_jpg_prob0.1.pth',
                'Wang2020-B': 'blur_jpg_prob0.5.pth',
-               'NPR': 'NPR.pth'}
+               'NPR': 'NPR.pth',
+               'Mandelli2024': 'synth_vs_real.pth',}
 
 COMPRESSED_TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco', 'ffhq'],
              'Grag2021_latent': ['imagenet', 'coco'],
@@ -31,7 +32,8 @@ COMPRESSED_TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco', 'ffhq'],
              'Corvi2023': ['imagenet', 'coco', 'ffhq'],
              'Wang2020-A': ['lsun', 'imagenet', 'coco', 'celeba', 'raw_camera'],
              'Wang2020-B': ['lsun', 'imagenet', 'coco', 'celeba', 'raw_camera'],
-             'NPR': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'raw_camera']}
+             'NPR': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'raw_camera'],
+             'Mandelli2024': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'celeba']}
 
 SYN_TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco', 'ffhq'],
              'Grag2021_latent': ['imagenet', 'coco'],
@@ -42,7 +44,8 @@ SYN_TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco', 'ffhq'],
              'Corvi2023': ['imagenet', 'coco', 'ffhq'],
              'Wang2020-A': ['lsun', 'imagenet', 'coco', 'celeba', 'raw_camera'],
              'Wang2020-B': ['lsun', 'imagenet', 'coco', 'celeba', 'raw_camera'],
-             'NPR': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'raw_camera']}
+             'NPR': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'raw_camera'],
+             'Mandelli2024': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'celeba']}
 
 SYN_DETECTOR_DATASET_MAPPING = {'Grag2021_progan': 'Corvi2023',
                              'Grag2021_latent': 'Corvi2023',
@@ -53,10 +56,11 @@ SYN_DETECTOR_DATASET_MAPPING = {'Grag2021_progan': 'Corvi2023',
                              'Corvi2023': 'Corvi2023',
                              'Wang2020-A': 'Wang2020',
                              'Wang2020-B': 'Wang2020',
-                             'NPR': 'Ojha2023'}
+                             'NPR': 'Ojha2023',
+                             'Mandelli2024': 'Mandelli2024'}
 
 SYN_DETECTORS = ['Grag2021_progan', 'Grag2021_latent', 'Ojha2023', 'Ojha2023ResNet50',
                  'Cozzolino2024-A', 'Cozzolino2024-B', 'Corvi2023', 'Wang2020-A', 'Wang2020-B',
-                 'NPR']
+                 'NPR', 'Mandelli2024']
 
 SPLICING_DETECTORS = ['TruFor', 'ImageForensicsOSN', 'MMFusion']
