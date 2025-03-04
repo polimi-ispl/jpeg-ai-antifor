@@ -52,7 +52,7 @@ def get_transform_list(detector: str):
         return T.Compose([T.Resize((256, 256)), T.ToTensor(),
                           T.Normalize(mean=[0.485, 0.456, 0.406],
                                       std=[0.229, 0.224, 0.225])])
-    elif detector == 'Mandelli2024':
+    elif detector in ['Mandelli2024', 'Mandelli2024-FT']:
         return MandelliRandomPatchTransform(patch_size=96, n_patches=800)
     elif detector == 'TruFor':
         return T.Compose([T.ToTensor()])  # ToTensor already converts to [0, 1]
@@ -78,7 +78,7 @@ def return_collate_fn(detector: str):
     """
     Return the collate function for the specific detector
     """
-    if detector == 'Mandelli2024':
+    if detector in ['Mandelli2024', 'Mandelli2024-FT']:
         return mandelli_collate_fn
     else:
         return torch.utils.data.default_collate
