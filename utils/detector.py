@@ -122,7 +122,7 @@ class SynImgDetector:
             model.load_state_dict(net_state_dict, strict=True)
             model = model.to(self.device).eval()
             return model
-        elif self.detector == 'Mandelli2024':
+        elif self.detector in ['Mandelli2024', 'Mandelli2024-FT']:
             import utils.third_party.Mandelli2024.utils.architectures as architectures
             from collections import OrderedDict
             # Get model class
@@ -188,7 +188,7 @@ class SynImgDetector:
                 output = output.cpu().numpy()
             elif self.detector == 'NPR':
                 output = output.cpu().numpy()
-            elif self.detector == 'Mandelli2024':
+            elif self.detector in ['Mandelli2024', 'Mandelli2024-FT']:
                 # Reshape the scores with the batch size
                 output = output.view(-1, 800, 2)
                 # aggregate the scores to compute the final image score
