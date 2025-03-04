@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import torch
 from PIL import Image
-from utils.blazeface import BlazeFace
+from .blazeface import BlazeFace
 
 
 class FaceExtractor:

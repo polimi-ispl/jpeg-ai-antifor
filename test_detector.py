@@ -22,7 +22,7 @@ import torch
 from tqdm import tqdm
 from multiprocessing import cpu_count
 from utils.params import *
-from utils.data import get_transform_list, ImgDataset
+from utils.data import get_transform_list, ImgDataset, return_collate_fn
 from utils.detector import SynImgDetector
 import pandas as pd
 
@@ -81,7 +81,10 @@ def run_test_case(test_type: str, input_dir: str, detector: SynImgDetector, devi
     # TODO: add the case for real and synthetic augmented images
     # Create the dataloader
     dataset = ImgDataset(root_dir=input_dir, data_df=data_info, transform=transforms)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+    # Remember that the output of Mandelli2024 transform is a list of patches, so we need a specialized collate_fn
+    # to have 4D tensor (batch_size*n_patches, C, H, W) rather than a 5D tensor (batch_size, n_patches, C, H, W)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers,
+                                             collate_fn=return_collate_fn(detector.detector))
 
     # --- Prepare the output dataframe --- #
     results = data_info.copy()
@@ -192,11 +195,14 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # --- Call main --- #
-    try:
-        main(args)
-    except Exception as e:
-        print(f"Error: {e}")
-        sys.exit(1)
+    # try:
+    #     main(args)
+    # except Exception as e:
+    #     print(f"Error: {e}")
+    #     sys.exit(1)
+    main(args)
 
     # --- Exit --- #
     sys.exit(0)
+
+# TODO: aggiungere Mandelli2024 al dataframe di test
