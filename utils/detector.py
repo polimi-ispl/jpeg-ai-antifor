@@ -129,7 +129,7 @@ class SynImgDetector:
             net_class = getattr(architectures, 'EfficientNetB4')
             # Instantiate and load model
             model = net_class(n_classes=2, pretrained=False)
-            state_tmp = torch.load(self.weights_path, map_location='cpu')
+            state_tmp = torch.load(os.path.join(self.weights_path, MODELS_LIST[self.detector]), map_location='cpu')
             if 'net' not in state_tmp.keys():
                 state = OrderedDict({'net': OrderedDict()})
                 [state['net'].update({'model.{}'.format(k): v}) for k, v in state_tmp.items()]
@@ -189,8 +189,10 @@ class SynImgDetector:
             elif self.detector == 'NPR':
                 output = output.cpu().numpy()
             elif self.detector == 'Mandelli2024':
+                # Reshape the scores with the batch size
+                output = output.view(-1, 800, 2)
                 # aggregate the scores to compute the final image score
-                output = torch.mean(torch.sort(output[:, 1])[0][-600:])
+                output = torch.mean(torch.sort(output[:, :, 1], axis=1)[0][:, -600:], axis=1)
                 output = output.cpu().numpy()
             return output
 
