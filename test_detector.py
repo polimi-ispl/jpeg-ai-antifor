@@ -204,5 +204,3 @@ if __name__ == '__main__':
 
     # --- Exit --- #
     sys.exit(0)
-
-# TODO: aggiungere Mandelli2024 al dataframe di test
