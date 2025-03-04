@@ -63,6 +63,26 @@ def get_transform_list(detector: str):
     else:
         return T.Compose([T.ToTensor()])
 
+
+def mandelli_collate_fn(batch):
+    """
+    Collate function for the Mandelli2024 detector.
+    This function is needed to manage the output of the MandelliRandomPatchTransform.
+    """
+    data = torch.cat([item[0] for item in batch], dim=0)
+    target = [item[1] for item in batch]
+    return [data, target]
+
+
+def return_collate_fn(detector: str):
+    """
+    Return the collate function for the specific detector
+    """
+    if detector == 'Mandelli2024':
+        return mandelli_collate_fn
+    else:
+        return torch.utils.data.default_collate
+
 # --- Custom transforms --- #
 class MandelliRandomPatchTransform(torch.nn.Module):
     """
@@ -78,8 +98,10 @@ class MandelliRandomPatchTransform(torch.nn.Module):
         self.normalize = T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         self.resize = T.Resize(256, interpolation=T.InterpolationMode.BILINEAR)
         self.face_detector = BlazeFace()
-        self.face_detector.load_weights('./third_party/Mandelli2024/utils/blazeface/blazeface.pth')
-        self.face_detector.load_anchors('./third_party/Mandelli2024/utils/blazeface/anchors.npy')
+        self.face_detector.load_weights(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                                     'third_party/Mandelli2024/utils/blazeface/blazeface.pth'))
+        self.face_detector.load_anchors(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                                     'third_party/Mandelli2024/utils/blazeface/anchors.npy'))
         self.face_extractor = FaceExtractor(facedet=self.face_detector)
 
     def forward(self, img: Image.Image or np.array):
@@ -89,7 +111,8 @@ class MandelliRandomPatchTransform(torch.nn.Module):
         np.random.seed(21)
         torch.manual_seed(21)
 
-        # --- Check on image format
+        # --- Check on image format and convert it to RGB if needed
+        img = np.array(img)
         if img.ndim < 3:
             print('Gray scale image, converting to RGB')
             img2 = np.zeros((img.shape[0], img.shape[1], 3), dtype=np.uint8)
@@ -144,8 +167,11 @@ class MandelliRandomPatchTransform(torch.nn.Module):
         all_patches = []
         for face in faces:
 
+            # Convert the face to a PIL image
+            face = Image.fromarray(face)
+
             # if the face size is smaller than 256 x 256, perform a little bit of upscaling to enlarge its size
-            if face.shape[0] < 256 or face.shape[1] < 256:
+            if face.size[0] < 256 or face.size[1] < 256:
                 face = self.resize(face)
 
             # Extract patches
