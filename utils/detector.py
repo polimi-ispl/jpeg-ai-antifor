@@ -135,6 +135,8 @@ class SynImgDetector:
                 [state['net'].update({'model.{}'.format(k): v}) for k, v in state_tmp.items()]
             else:
                 state = state_tmp
+                if self.detector == 'Mandelli2024-FT':
+                    state['net'] = {k.replace('module.', ''): v for k, v in state['net'].items()}
             incomp_keys = model.load_state_dict(state['net'], strict=True)
             print(incomp_keys)
             return model.to(self.device).eval()
