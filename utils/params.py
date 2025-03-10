@@ -22,6 +22,7 @@ MODELS_LIST = {'Grag2021_progan': 'Grag2021_progan',
                'Wang2020-B': 'blur_jpg_prob0.5.pth',
                'NPR': 'NPR.pth',
                'Mandelli2024': 'synth_vs_real.pth',
+               'Mandelli2024-RT': 'retrained.pth',
                'Mandelli2024-FT': 'finetuned.pth',}
 
 COMPRESSED_TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco', 'ffhq'],
@@ -35,6 +36,7 @@ COMPRESSED_TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco', 'ffhq'],
              'Wang2020-B': ['lsun', 'imagenet', 'coco', 'celeba', 'raw_camera'],
              'NPR': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'raw_camera'],
              'Mandelli2024': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'celeba'],
+             'Mandelli2024-RT': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'celeba'],
              'Mandelli2024-FT': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'celeba']}
 
 SYN_TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco', 'ffhq'],
@@ -48,6 +50,7 @@ SYN_TEST_DATA = {'Grag2021_progan': ['imagenet', 'coco', 'ffhq'],
              'Wang2020-B': ['lsun', 'imagenet', 'coco', 'celeba', 'raw_camera'],
              'NPR': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'raw_camera'],
              'Mandelli2024': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'celeba'],
+             'Mandelli2024-RT': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'celeba'],
              'Mandelli2024-FT': ['lsun', 'ffhq', 'imagenet', 'coco', 'laion', 'raise', 'celeba']}
 
 SYN_DETECTOR_DATASET_MAPPING = {'Grag2021_progan': 'Corvi2023',
@@ -61,10 +64,11 @@ SYN_DETECTOR_DATASET_MAPPING = {'Grag2021_progan': 'Corvi2023',
                              'Wang2020-B': 'Wang2020',
                              'NPR': 'Ojha2023',
                              'Mandelli2024': 'Mandelli2024',
+                             'Mandelli2024-RT': 'Mandelli2024-RT',
                              'Mandelli2024-FT': 'Mandelli2024'}
 
 SYN_DETECTORS = ['Grag2021_progan', 'Grag2021_latent', 'Ojha2023', 'Ojha2023ResNet50',
                  'Cozzolino2024-A', 'Cozzolino2024-B', 'Corvi2023', 'Wang2020-A', 'Wang2020-B',
-                 'NPR', 'Mandelli2024', 'Mandelli2024-FT']
+                 'NPR', 'Mandelli2024', 'Mandelli2024-RT', 'Mandelli2024-FT']
 
 SPLICING_DETECTORS = ['TruFor', 'ImageForensicsOSN', 'MMFusion']

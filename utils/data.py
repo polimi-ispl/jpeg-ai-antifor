@@ -52,7 +52,7 @@ def get_transform_list(detector: str):
         return T.Compose([T.Resize((256, 256)), T.ToTensor(),
                           T.Normalize(mean=[0.485, 0.456, 0.406],
                                       std=[0.229, 0.224, 0.225])])
-    elif detector in ['Mandelli2024', 'Mandelli2024-FT']:
+    elif detector in ['Mandelli2024', 'Mandelli2024-FT', 'Mandelli2024-RT']:
         return MandelliRandomPatchTransform(patch_size=96, n_patches=800)
     elif detector == 'TruFor':
         return T.Compose([T.ToTensor()])  # ToTensor already converts to [0, 1]
@@ -78,7 +78,7 @@ def return_collate_fn(detector: str):
     """
     Return the collate function for the specific detector
     """
-    if detector in ['Mandelli2024', 'Mandelli2024-FT']:
+    if detector in ['Mandelli2024', 'Mandelli2024-FT', 'Mandelli2024-RT']:
         return mandelli_collate_fn
     else:
         return torch.utils.data.default_collate
@@ -97,12 +97,12 @@ class MandelliRandomPatchTransform(torch.nn.Module):
         self.random_crop = T.RandomCrop(patch_size)
         self.normalize = T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         self.resize = T.Resize(256, interpolation=T.InterpolationMode.BILINEAR)
-        self.face_detector = BlazeFace()
-        self.face_detector.load_weights(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                     'third_party/Mandelli2024/utils/blazeface/blazeface.pth'))
-        self.face_detector.load_anchors(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                     'third_party/Mandelli2024/utils/blazeface/anchors.npy'))
-        self.face_extractor = FaceExtractor(facedet=self.face_detector)
+        # self.face_detector = BlazeFace()
+        # self.face_detector.load_weights(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+        #                                              'third_party/Mandelli2024/utils/blazeface/blazeface.pth'))
+        # self.face_detector.load_anchors(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+        #                                              'third_party/Mandelli2024/utils/blazeface/anchors.npy'))
+        # self.face_extractor = FaceExtractor(facedet=self.face_detector)
 
     def forward(self, img: Image.Image or np.array):
 
@@ -126,60 +126,61 @@ class MandelliRandomPatchTransform(torch.nn.Module):
 
         # --- Detect the faces if present on the image
 
-        # Split the image into several tiles. Resize the tiles to 128x128.
-        tiles, resize_info = self.face_extractor._tile_frames(frames=np.expand_dims(img, 0),
-                                                         target_size=self.face_detector.input_size)
-        # tiles has shape (num_tiles, target_size, target_size, 3)
-        # resize_info is a list of four elements [resize_factor_y, resize_factor_x, 0, 0]
-        # Run the face detector. The result is a list of PyTorch tensors,
-        # one for each tile in the batch.
-        detections = self.face_detector.predict_on_batch(tiles, apply_nms=False)
-        # Convert the detections from 128x128 back to the original image size.
-        image_size = (img.shape[1], img.shape[0])
-        detections = self.face_extractor._resize_detections(detections, self.face_detector.input_size, resize_info)
-        detections = self.face_extractor._untile_detections(1, image_size, detections)
-        # The same face may have been detected in multiple tiles, so filter out overlapping detections.
-        detections = self.face_detector.nms(detections)
+        # # Split the image into several tiles. Resize the tiles to 128x128.
+        # tiles, resize_info = self.face_extractor._tile_frames(frames=np.expand_dims(img, 0),
+        #                                                  target_size=self.face_detector.input_size)
+        # # tiles has shape (num_tiles, target_size, target_size, 3)
+        # # resize_info is a list of four elements [resize_factor_y, resize_factor_x, 0, 0]
+        # # Run the face detector. The result is a list of PyTorch tensors,
+        # # one for each tile in the batch.
+        # detections = self.face_detector.predict_on_batch(tiles, apply_nms=False)
+        # # Convert the detections from 128x128 back to the original image size.
+        # image_size = (img.shape[1], img.shape[0])
+        # detections = self.face_extractor._resize_detections(detections, self.face_detector.input_size, resize_info)
+        # detections = self.face_extractor._untile_detections(1, image_size, detections)
+        # # The same face may have been detected in multiple tiles, so filter out overlapping detections.
+        # detections = self.face_detector.nms(detections)
+        #
+        # # Crop the faces out of the original frame.
+        # frameref_detections = self.face_extractor._add_margin_to_detections(detections[0], image_size, 0.5)
+        # faces = self.face_extractor._crop_faces(img, frameref_detections)
+        #
+        # # Add additional information about the frame and detections.
+        # scores = list(detections[0][:, 16])
+        # frame_dict = {"faces": faces,
+        #               "scores": scores,
+        #               }
+        # # consider at most the two best detected faces
+        # if len(faces) > 1:
+        #     faces = [faces[x] for x in np.argsort(scores)]
+        #     faces = [faces[-2], faces[-1]]
+        # # if only one face is detected, consider it
+        # elif len(faces) == 1:
+        #     faces = [frame_dict['faces'][-1]]
+        # # if a face has not been detected, consider the entire img
+        # else:
+        #     faces = [img]
+        #
+        # # --- Crop the patches from the faces
+        #
+        # # define the list containing all the analyzed patches (for all the considered faces)
+        # all_patches = []
+        # for face in faces:
+        #
+        # Convert the face to a PIL image
+        img = Image.fromarray(img)
 
-        # Crop the faces out of the original frame.
-        frameref_detections = self.face_extractor._add_margin_to_detections(detections[0], image_size, 0.5)
-        faces = self.face_extractor._crop_faces(img, frameref_detections)
+        # if the face size is smaller than 256 x 256, perform a little bit of upscaling to enlarge its size
+        if img.size[0] < 256 or img.size[1] < 256:
+            img = self.resize(img)
 
-        # Add additional information about the frame and detections.
-        scores = list(detections[0][:, 16])
-        frame_dict = {"faces": faces,
-                      "scores": scores,
-                      }
-        # consider at most the two best detected faces
-        if len(faces) > 1:
-            faces = [faces[x] for x in np.argsort(scores)]
-            faces = [faces[-2], faces[-1]]
-        # if only one face is detected, consider it
-        elif len(faces) == 1:
-            faces = [frame_dict['faces'][-1]]
-        # if a face has not been detected, consider the entire img
-        else:
-            faces = [img]
-
-        # --- Crop the patches from the faces
-
-        # define the list containing all the analyzed patches (for all the considered faces)
+        # Extract patches
         all_patches = []
-        for face in faces:
-
-            # Convert the face to a PIL image
-            face = Image.fromarray(face)
-
-            # if the face size is smaller than 256 x 256, perform a little bit of upscaling to enlarge its size
-            if face.size[0] < 256 or face.size[1] < 256:
-                face = self.resize(face)
-
-            # Extract patches
-            for _ in range(self.n_patches):
-                patch = self.random_crop(face)
-                patch = T.ToTensor()(patch)
-                patch = self.normalize(patch)
-                all_patches.append(patch)
+        for _ in range(self.n_patches):
+            patch = self.random_crop(img)
+            patch = T.ToTensor()(patch)
+            patch = self.normalize(patch)
+            all_patches.append(patch)
 
         # if the number of patches is too high (due to multiple faces detected), we still keep 800 patches
         if len(all_patches) > 800:
