@@ -11,7 +11,7 @@ In order to run our code, you need to:
 1. install [conda](https://docs.conda.io/en/latest/miniconda.html)
 2. create the `jpeg-ai-antifor` environment using the *environment.yml* file
 ```bash
-conda env create -f envinroment.yml
+conda env create -f environment.yml 
 conda activate jpeg-ai-antifor
 ```
 3. download the [dataset] of the paper and extract it in the *data* folder (data to be uploaded soon!)
