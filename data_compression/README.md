@@ -12,8 +12,8 @@ Follow the instructions needed for the installation, and remember to activate th
 
 ## Usage
 Both scripts require the same arguments:
-- `--input_dir`: the directory containing the images to compress;
-- `--output_dir`: the directory where the compressed images will be saved;  
+- `--input_path`: the directory containing the images to compress;
+- `--output_path`: the directory where the compressed images will be saved;  
 
 For the `jpegai_compress_directory.py` script, you also need to specify the path to the JPEG AI Reference software using the
 `JPEG_AI_PATH` parameter in `utils/params.py`, and the path to the JPEG AI models location using the `--models_dir_name` argument.
