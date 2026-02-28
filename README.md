@@ -2,12 +2,12 @@
 
 ![](assets/teaser.jpg)
 
-This is the official code repository for the paper *Is JPEG AI going to change image forensics?* currently under revision and available in preprint [here](https://arxiv.org/abs/2412.03261).  
+This is the official code repository for the paper *Is JPEG AI going to change image forensics?*, accepted for presentation at the APAI @ICCV 2025 workshop and available [here](https://openaccess.thecvf.com/content/ICCV2025W/APAI/html/Cannas_Is_JPEG_AI_going_to_change_image_forensics_ICCVW_2025_paper.html).  
 The repository is **under development**, so feel free to open an issue if you encounter any problems.
 
 # Getting started
 
-In order to run our code, you need to:
+To run our code, you need to:
 1. install [conda](https://docs.conda.io/en/latest/miniconda.html)
 2. create the `jpeg-ai-antifor` environment using the *environment.yml* file
 ```bash
@@ -40,7 +40,7 @@ We executed all of our experiments on a workstation equipped with Intel Xeon Gol
 **Please note** that depending on the batch size used in the `test_all.sh` script, you might require more memory.
 
 ## Data
-For our experiments, we relied on the datasets provided by the original authors of the each of the detectors considered.  
+For our experiments, we relied on the datasets provided by the original authors of each of the detectors considered.  
 We then compressed the images with both JPEG and JPEG AI at different quality factors.  
 We refer the user to the `data_compression/README.md` for more information on how to compress the images.
 
@@ -49,3 +49,16 @@ All the detectors considered in this work are publicly available and have been d
 We refer to the original papers for more information on the detectors and the respective licenses.  
 We would like to thank them nonetheless for making their code available and allowing us to perform our experiments.  
 For details on the JPEG AI Reference software, please refer to the [JPEG AI Reference software license](https://gitlab.com/wg1/jpeg-ai/jpeg-ai-reference-software/-/blob/master/LICENSE).
+
+# Like our work? Please cite us!
+If you use results from our work or tools from this repository, please cite our work as follows
+```
+@InProceedings{Cannas_2025_ICCV,
+    author    = {Cannas, Edoardo Daniele and Mandelli, Sara and Popovic, Natasa and Alkhateeb, Ayman and Gnutti, Alessandro and Bestagini, Paolo and Tubaro, Stefano},
+    title     = {Is JPEG AI going to change image forensics?},
+    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV) Workshops},
+    month     = {October},
+    year      = {2025},
+    pages     = {1564-1575}
+}
+```
